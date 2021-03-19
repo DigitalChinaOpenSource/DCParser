@@ -738,6 +738,7 @@ import (
 
 %token not2
 %type	<expr>
+	PgParamMarker		   "Postgresql Prepare query paramMarker"
 	Expression             "expression"
 	MaxValueOrExpression   "maxvalue or expression"
 	BoolPri                "boolean primary expression"
@@ -5803,6 +5804,10 @@ SimpleExpr:
 	{
 		$$ = ast.NewParamMarkerExpr(yyS[yypt].offset)
 	}
+|   PgParamMarker
+	{
+		$$ = $1
+	}
 |	Variable
 |	SumExpr
 |	'!' SimpleExpr %prec neg
@@ -7294,6 +7299,10 @@ WindowFrameStart:
 	{
 		$$ = ast.FrameBound{Type: ast.Preceding, Expr: ast.NewParamMarkerExpr(yyS[yypt].offset)}
 	}
+|   PgParamMarker "PRECEDING"
+	{
+		$$ = ast.FrameBound{Type: ast.Preceding, Expr: $1}
+	}
 |	"INTERVAL" Expression TimeUnit "PRECEDING"
 	{
 		$$ = ast.FrameBound{Type: ast.Preceding, Expr: $2, Unit: $3.(ast.TimeUnitType)}
@@ -7325,6 +7334,10 @@ WindowFrameBound:
 |	paramMarker "FOLLOWING"
 	{
 		$$ = ast.FrameBound{Type: ast.Following, Expr: ast.NewParamMarkerExpr(yyS[yypt].offset)}
+	}
+|	PgParamMarker "FOLLOWING"
+	{
+		$$ = ast.FrameBound{Type: ast.Following, Expr: $1}
 	}
 |	"INTERVAL" Expression TimeUnit "FOLLOWING"
 	{
@@ -7727,6 +7740,10 @@ LimitOption:
 |	paramMarker
 	{
 		$$ = ast.NewParamMarkerExpr(yyS[yypt].offset)
+	}
+|	PgParamMarker
+	{
+		$$ = $1
 	}
 
 RowOrRows:
@@ -11809,5 +11826,15 @@ EncryptionOpt:
 			return 1
 		}
 		$$ = $1
+	}
+
+PgParamMarker:
+	'$' LengthNum
+	{
+		var offset int
+		offset = yyS[yypt].offset
+		x := ast.NewParamMarkerExpr(offset)
+		x.SetOrder(int($2.(uint64)))0
+		$$ = x
 	}
 %%
