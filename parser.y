@@ -11834,7 +11834,7 @@ PgParamMarker:
 		var offset int
 		offset = yyS[yypt].offset
 		x := ast.NewParamMarkerExpr(offset)
-		x.SetOrder(int($2.(uint64)))0
+		x.SetOrder(int($2.(uint64)))
 		$$ = x
 	}
 %%
