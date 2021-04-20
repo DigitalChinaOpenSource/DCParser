@@ -1101,7 +1101,8 @@ func (n *UserSpec) EncodedPassword() (string, bool) {
 
 	opt := n.AuthOpt
 	if opt.ByAuthString {
-		return auth.EncodePassword(opt.AuthString), true
+		//return auth.EncodePassword(opt.AuthString), true
+		return auth.EncodePasswordByMD5(n.User.Username, opt.AuthString), true
 	}
 
 	// Not a legal password string.
