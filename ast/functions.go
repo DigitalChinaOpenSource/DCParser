@@ -338,6 +338,12 @@ const (
 	NextVal = "nextval"
 	LastVal = "lastval"
 	SetVal  = "setval"
+
+	// Pg function
+	PgFuncCurrentDatabase = "current_database"
+	PgFuncSetConfig = "set_config"
+	PgFuncEncodingToChar = "pg_encoding_to_char"
+	PgFuncHasDatabasePrivilege = "has_database_privilege"
 )
 
 // FuncCallExpr is for function expression.
