@@ -196,7 +196,6 @@ import (
 	ntile             "NTILE"
 	null              "NULL"
 	numericType       "NUMERIC"
-	oid				  "OID"
 	on                "ON"
 	optimize          "OPTIMIZE"
 	option            "OPTION"
@@ -9935,10 +9934,6 @@ IntegerType:
 	{
 		$$ = mysql.TypeLonglong
 	}
-|	"OID"
-	{
-		$$ = mysql.TypeLong
-	}
 
 BooleanType:
 	"BOOL"
@@ -9954,7 +9949,6 @@ OptInteger:
 	{}
 |	"INTEGER"
 |	"INT"
-|	"OID"
 
 FixedPointType:
 	"DECIMAL"
