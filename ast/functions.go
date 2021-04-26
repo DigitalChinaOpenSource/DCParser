@@ -344,6 +344,10 @@ const (
 	PgFuncSetConfig = "set_config"
 	PgFuncEncodingToChar = "pg_encoding_to_char"
 	PgFuncHasDatabasePrivilege = "has_database_privilege"
+	PgFuncHasTablePrivilege = "has_table_privilege"
+	PgFuncHasSchemaPrivilege = "has_schema_privilege"
+	PgFuncIsInRecovery = "pg_is_in_recovery"
+	PgFuncIsWalReplayPaused = "pg_is_wal_replay_paused"
 )
 
 // FuncCallExpr is for function expression.

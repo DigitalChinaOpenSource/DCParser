@@ -1891,6 +1891,7 @@ const (
 	ShowWarnings
 	ShowCharset
 	ShowVariables
+	ShowVariable
 	ShowStatus
 	ShowCollation
 	ShowCreateTable
@@ -2172,6 +2173,8 @@ func (n *ShowStmt) Restore(ctx *format.RestoreCtx) error {
 			ctx.WriteKeyWord("ERRORS")
 		case ShowVariables:
 			restoreGlobalScope()
+			ctx.WriteKeyWord("VARIABLES")
+		case ShowVariable:
 			ctx.WriteKeyWord("VARIABLES")
 		case ShowStatus:
 			restoreGlobalScope()
