@@ -143,18 +143,20 @@ func DecodePassword(pwd string) ([]byte, error) {
 
 // EncodePasswordByMD5 PostgreSQL encode password by md5
 func EncodePasswordByMD5(user string, pwd string) string {
+	if pwd == "" {
+		return pwd
+	}
+
 	x := md5.Sum([]byte(pwd + user))
 	return "md5" + hex.EncodeToString(x[:])
 }
 
 // DecodePasswordByMD5 remove prefix "md5"
 func DecodePasswordByMD5(pwd string) (string,error) {
-	if len(pwd) <= 3 {
+	if len(pwd) <= 3 || pwd[0:3] != "md5" {
 		return "", errors.New("decode password string failed")
 	}
-	if pwd[0:3] != "md5" {
-		return "", errors.New("decode password string failed")
-	}
+
 	return pwd[3:],nil
 }
 

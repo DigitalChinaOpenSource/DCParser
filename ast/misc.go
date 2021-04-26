@@ -1105,8 +1105,9 @@ func (n *UserSpec) EncodedPassword() (string, bool) {
 		return auth.EncodePasswordByMD5(n.User.Username, opt.AuthString), true
 	}
 
+	// todo check HashString is a legal password string for md5
 	// Not a legal password string.
-	if len(opt.HashString) != 41 || !strings.HasPrefix(opt.HashString, "*") {
+	if len(opt.HashString) != 35 || !strings.HasPrefix(opt.HashString, "md5") {
 		return "", false
 	}
 	return opt.HashString, true
