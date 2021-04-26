@@ -8267,6 +8267,7 @@ SetExpr:
 EqOrAssignmentEq:
 	eq
 |	assignmentEq
+|	to
 
 VariableName:
 	Identifier
