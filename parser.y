@@ -8909,6 +8909,12 @@ ShowStmt:
 			Tp: ast.ShowBuiltins,
 		}
 	}
+| 	"SHOW" identifier
+	{
+		$$ = &ast.ShowStmt{
+			Tp: ast.ShowVariable,
+		}
+	}
 
 ShowProfileTypesOpt:
 	{
