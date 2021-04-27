@@ -1968,6 +1968,9 @@ type ShowStmt struct {
 	ShowProfileTypes []int  // Used for `SHOW PROFILE` syntax
 	ShowProfileArgs  *int64 // Used for `SHOW PROFILE` syntax
 	ShowProfileLimit *Limit // Used for `SHOW PROFILE` syntax
+
+	//pg variable
+	VariableName 		string
 }
 
 // Restore implements Node interface.

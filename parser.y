@@ -8914,6 +8914,7 @@ ShowStmt:
 	{
 		$$ = &ast.ShowStmt{
 			Tp: ast.ShowVariable,
+            VariableName: $2,
 		}
 	}
 
