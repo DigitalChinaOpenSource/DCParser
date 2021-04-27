@@ -348,6 +348,9 @@ const (
 	PgFuncHasSchemaPrivilege = "has_schema_privilege"
 	PgFuncIsInRecovery = "pg_is_in_recovery"
 	PgFuncIsWalReplayPaused = "pg_is_wal_replay_paused"
+	PgFuncGetUserById	= "pg_get_userbyid"
+	PgFuncObjDescription = "obj_description"
+	PgFuncShobjDescription = "shobj_description"
 )
 
 // FuncCallExpr is for function expression.
