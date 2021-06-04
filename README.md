@@ -2,7 +2,7 @@
 
 ## Introduction
 
-DCParser is a single project built for compatibility with TiDB for PostgreSQL for PostgreSQL. It is based on PingCAP/parser, but it is difficult to merge into the original parser repository because there are many changes. So a new project is created to provide parsing abilities for TiDB for PostgreSQL.
+DCParser is a single project built for compatibility with TiDB for PostgreSQL. It is based on PingCAP/parser, but it is difficult to merge into the original parser repository because there are many changes. So a new project is created to provide parsing abilities for TiDB for PostgreSQL.
 
 ## Development
 
