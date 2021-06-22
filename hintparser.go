@@ -21,8 +21,8 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/pingcap/parser/ast"
-	"github.com/pingcap/parser/model"
+	"github.com/DigitalChinaOpenSource/DCParser/ast"
+	"github.com/DigitalChinaOpenSource/DCParser/model"
 )
 
 type yyhintSymType struct {

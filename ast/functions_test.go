@@ -15,10 +15,10 @@ package ast_test
 
 import (
 	. "github.com/pingcap/check"
-	"github.com/pingcap/parser"
-	. "github.com/pingcap/parser/ast"
-	"github.com/pingcap/parser/mysql"
-	"github.com/pingcap/parser/test_driver"
+	"github.com/DigitalChinaOpenSource/DCParser"
+	. "github.com/DigitalChinaOpenSource/DCParser/ast"
+	"github.com/DigitalChinaOpenSource/DCParser/mysql"
+	"github.com/DigitalChinaOpenSource/DCParser/test_driver"
 )
 
 var _ = Suite(&testFunctionsSuite{})
