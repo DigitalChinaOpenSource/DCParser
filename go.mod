@@ -1,4 +1,4 @@
-module github.com/DigitalChinaOpenSource/DCParser
+module github.com/pingcap/parser
 
 require (
 	github.com/cznic/golex v0.0.0-20181122101858-9c343928389c // indirect
