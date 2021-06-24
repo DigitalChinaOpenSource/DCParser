@@ -1,5 +1,8 @@
 <!--
-Thank you for contributing to TiDB SQL Parser! Please read [this](https://github.com/pingcap/parser/blob/master/README.md) document **BEFORE** filing this PR.
+Thank you for contributing to TiDB SQL Parser! Please read 
+[this](https://github.com/pingcap/parser/blob/master/README.md) or 
+[this](https://github.com/DigitalChinaOpenSource/DCParser/blob/main/docs/quickstart.md) document 
+**BEFORE** filing this PR.
 -->
 
 ### What problem does this PR solve? <!--add issue link with summary if exists-->
