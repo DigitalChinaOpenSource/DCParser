@@ -6,5 +6,6 @@ env:
   - GO111MODULE=on
 install:
   - go test
+  - go build
 after_success:
   - bash <(curl -s https://codecov.io/bash)
