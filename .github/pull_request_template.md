@@ -1,6 +1,6 @@
 <!--
 Thank you for contributing to TiDB SQL Parser! Please read 
-[this](https://github.com/pingcap/parser/blob/master/README.md) or 
+[this](https://github.com/DigitalChinaOpenSource/DCParser/blob/master/README.md) or 
 [this](https://github.com/DigitalChinaOpenSource/DCParser/blob/main/docs/quickstart.md)
 document **BEFORE** filing this PR.
 -->
