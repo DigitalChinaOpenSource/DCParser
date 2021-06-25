@@ -14,11 +14,11 @@
 package ast
 
 import (
-	"github.com/pingcap/errors"
 	"github.com/DigitalChinaOpenSource/DCParser/auth"
 	"github.com/DigitalChinaOpenSource/DCParser/format"
 	"github.com/DigitalChinaOpenSource/DCParser/model"
 	"github.com/DigitalChinaOpenSource/DCParser/mysql"
+	"github.com/pingcap/errors"
 )
 
 var (
@@ -1970,7 +1970,7 @@ type ShowStmt struct {
 	ShowProfileLimit *Limit // Used for `SHOW PROFILE` syntax
 
 	//pg variable
-	VariableName 		string
+	VariableName string
 }
 
 // Restore implements Node interface.

@@ -28,13 +28,13 @@ package parser
 import (
 	"strings"
 
-	"github.com/DigitalChinaOpenSource/DCParser/mysql"
-	"github.com/DigitalChinaOpenSource/DCParser/ast"
-	"github.com/DigitalChinaOpenSource/DCParser/model"
-	"github.com/DigitalChinaOpenSource/DCParser/opcode"
-	"github.com/DigitalChinaOpenSource/DCParser/auth"
-	"github.com/DigitalChinaOpenSource/DCParser/charset"
-	"github.com/DigitalChinaOpenSource/DCParser/types"
+	"github.com/pingcap/parser/mysql"
+	"github.com/pingcap/parser/ast"
+	"github.com/pingcap/parser/model"
+	"github.com/pingcap/parser/opcode"
+	"github.com/pingcap/parser/auth"
+	"github.com/pingcap/parser/charset"
+	"github.com/pingcap/parser/types"
 )
 
 %}
@@ -738,7 +738,7 @@ import (
 
 %token not2
 %type	<expr>
-	PgParamMarker		   "Postgresql Prepare query paramMarker"
+	PgParamMarker          "Postgresql Prepare query paramMarker"
 	Expression             "expression"
 	MaxValueOrExpression   "maxvalue or expression"
 	BoolPri                "boolean primary expression"
@@ -5804,7 +5804,7 @@ SimpleExpr:
 	{
 		$$ = ast.NewParamMarkerExpr(yyS[yypt].offset)
 	}
-|   PgParamMarker
+|	PgParamMarker
 	{
 		$$ = $1
 	}
@@ -7299,7 +7299,7 @@ WindowFrameStart:
 	{
 		$$ = ast.FrameBound{Type: ast.Preceding, Expr: ast.NewParamMarkerExpr(yyS[yypt].offset)}
 	}
-|   PgParamMarker "PRECEDING"
+|	PgParamMarker "PRECEDING"
 	{
 		$$ = ast.FrameBound{Type: ast.Preceding, Expr: $1}
 	}
@@ -8910,11 +8910,11 @@ ShowStmt:
 			Tp: ast.ShowBuiltins,
 		}
 	}
-| 	"SHOW" identifier
+|	"SHOW" identifier
 	{
 		$$ = &ast.ShowStmt{
-			Tp: ast.ShowVariable,
-            VariableName: $2,
+			Tp:           ast.ShowVariable,
+			VariableName: $2,
 		}
 	}
 

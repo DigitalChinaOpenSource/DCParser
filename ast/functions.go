@@ -19,10 +19,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pingcap/errors"
 	"github.com/DigitalChinaOpenSource/DCParser/format"
 	"github.com/DigitalChinaOpenSource/DCParser/model"
 	"github.com/DigitalChinaOpenSource/DCParser/types"
+	"github.com/pingcap/errors"
 )
 
 var (
@@ -340,17 +340,17 @@ const (
 	SetVal  = "setval"
 
 	// Pg function
-	PgFuncCurrentDatabase = "current_database"
-	PgFuncSetConfig = "set_config"
-	PgFuncEncodingToChar = "pg_encoding_to_char"
+	PgFuncCurrentDatabase      = "current_database"
+	PgFuncSetConfig            = "set_config"
+	PgFuncEncodingToChar       = "pg_encoding_to_char"
 	PgFuncHasDatabasePrivilege = "has_database_privilege"
-	PgFuncHasTablePrivilege = "has_table_privilege"
-	PgFuncHasSchemaPrivilege = "has_schema_privilege"
-	PgFuncIsInRecovery = "pg_is_in_recovery"
-	PgFuncIsWalReplayPaused = "pg_is_wal_replay_paused"
-	PgFuncGetUserById	= "pg_get_userbyid"
-	PgFuncObjDescription = "obj_description"
-	PgFuncShobjDescription = "shobj_description"
+	PgFuncHasTablePrivilege    = "has_table_privilege"
+	PgFuncHasSchemaPrivilege   = "has_schema_privilege"
+	PgFuncIsInRecovery         = "pg_is_in_recovery"
+	PgFuncIsWalReplayPaused    = "pg_is_wal_replay_paused"
+	PgFuncGetUserById          = "pg_get_userbyid"
+	PgFuncObjDescription       = "obj_description"
+	PgFuncShobjDescription     = "shobj_description"
 )
 
 // FuncCallExpr is for function expression.

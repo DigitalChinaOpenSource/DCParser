@@ -20,9 +20,9 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/pingcap/errors"
 	"github.com/DigitalChinaOpenSource/DCParser/format"
 	"github.com/DigitalChinaOpenSource/DCParser/terror"
+	"github.com/pingcap/errors"
 )
 
 // UserIdentity represents username and hostname.
@@ -152,12 +152,12 @@ func EncodePasswordByMD5(user string, pwd string) string {
 }
 
 // DecodePasswordByMD5 remove prefix "md5"
-func DecodePasswordByMD5(pwd string) (string,error) {
+func DecodePasswordByMD5(pwd string) (string, error) {
 	if len(pwd) <= 3 || pwd[0:3] != "md5" {
 		return "", errors.New("decode password string failed")
 	}
 
-	return pwd[3:],nil
+	return pwd[3:], nil
 }
 
 // CheckPassword
