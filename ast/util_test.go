@@ -17,11 +17,11 @@ import (
 	"fmt"
 	"strings"
 
-	. "github.com/pingcap/check"
 	"github.com/DigitalChinaOpenSource/DCParser"
 	. "github.com/DigitalChinaOpenSource/DCParser/ast"
 	. "github.com/DigitalChinaOpenSource/DCParser/format"
 	"github.com/DigitalChinaOpenSource/DCParser/test_driver"
+	. "github.com/pingcap/check"
 )
 
 var _ = Suite(&testCacheableSuite{})

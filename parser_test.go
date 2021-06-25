@@ -20,8 +20,6 @@ import (
 	"strings"
 	"testing"
 
-	. "github.com/pingcap/check"
-	"github.com/pingcap/errors"
 	"github.com/DigitalChinaOpenSource/DCParser"
 	"github.com/DigitalChinaOpenSource/DCParser/ast"
 	"github.com/DigitalChinaOpenSource/DCParser/charset"
@@ -31,6 +29,8 @@ import (
 	"github.com/DigitalChinaOpenSource/DCParser/opcode"
 	"github.com/DigitalChinaOpenSource/DCParser/terror"
 	"github.com/DigitalChinaOpenSource/DCParser/test_driver"
+	. "github.com/pingcap/check"
+	"github.com/pingcap/errors"
 )
 
 func TestT(t *testing.T) {

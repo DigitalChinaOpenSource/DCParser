@@ -17,8 +17,8 @@ import (
 	"fmt"
 	"unicode"
 
-	. "github.com/pingcap/check"
 	"github.com/DigitalChinaOpenSource/DCParser/mysql"
+	. "github.com/pingcap/check"
 )
 
 var _ = Suite(&testLexerSuite{})

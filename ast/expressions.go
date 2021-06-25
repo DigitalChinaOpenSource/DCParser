@@ -19,10 +19,10 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/pingcap/errors"
 	"github.com/DigitalChinaOpenSource/DCParser/format"
 	"github.com/DigitalChinaOpenSource/DCParser/model"
 	"github.com/DigitalChinaOpenSource/DCParser/opcode"
+	"github.com/pingcap/errors"
 )
 
 var (

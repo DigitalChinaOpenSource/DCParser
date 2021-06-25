@@ -17,12 +17,12 @@ import (
 	"fmt"
 	"testing"
 
-	. "github.com/pingcap/check"
 	"github.com/DigitalChinaOpenSource/DCParser"
 	"github.com/DigitalChinaOpenSource/DCParser/ast"
 	"github.com/DigitalChinaOpenSource/DCParser/charset"
 	"github.com/DigitalChinaOpenSource/DCParser/mysql"
 	. "github.com/DigitalChinaOpenSource/DCParser/types"
+	. "github.com/pingcap/check"
 
 	// import parser_driver
 	_ "github.com/DigitalChinaOpenSource/DCParser/test_driver"
