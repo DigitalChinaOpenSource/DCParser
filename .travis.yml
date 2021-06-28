@@ -5,7 +5,8 @@ go:
 env:
   - GO111MODULE=on
 install:
-  - go test
   - go build
+script:
+  - go test -race -coverprofile=coverage.txt -covermode=atomic
 after_success:
   - bash <(curl -s https://codecov.io/bash)

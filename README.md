@@ -1,7 +1,9 @@
 # DCParser - SQL Parser optimized based on PingCAP/parser
 
+[![Language](https://img.shields.io/badge/Language-Go-blue.svg)](https://golang.org/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/DigitalChinaOpenSource/DCParser)](https://goreportcard.com/report/github.com/DigitalChinaOpenSource/DCParser)
 [![GoDoc](https://godoc.org/github.com/DigitalChinaOpenSource/DCParser?status.svg)](https://godoc.org/github.com/DigitalChinaOpenSource/DCParser)
+[![Build Status](https://travis-ci.com/DigitalChinaOpenSource/DCParser.svg?branch=main)](https://travis-ci.com/DigitalChinaOpenSource/DCParser)
 [![codecov](https://codecov.io/gh/DigitalChinaOpenSource/DCParser/branch/main/graph/badge.svg?token=6MGSRZAQE0)](https://codecov.io/gh/DigitalChinaOpenSource/DCParser)
 
 ## Introduction
