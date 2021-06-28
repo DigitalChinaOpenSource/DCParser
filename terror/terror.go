@@ -18,9 +18,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/DigitalChinaOpenSource/DCParser/mysql"
 	"github.com/pingcap/errors"
 	"github.com/pingcap/log"
-	"github.com/pingcap/parser/mysql"
 	"go.uber.org/zap"
 )
 

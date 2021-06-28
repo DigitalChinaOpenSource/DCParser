@@ -14,8 +14,8 @@
 package parser_test
 
 import (
+	"github.com/DigitalChinaOpenSource/DCParser"
 	. "github.com/pingcap/check"
-	"github.com/pingcap/parser"
 )
 
 var _ = Suite(&testSQLDigestSuite{})

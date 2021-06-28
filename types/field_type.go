@@ -18,9 +18,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/pingcap/parser/charset"
-	"github.com/pingcap/parser/format"
-	"github.com/pingcap/parser/mysql"
+	"github.com/DigitalChinaOpenSource/DCParser/charset"
+	"github.com/DigitalChinaOpenSource/DCParser/format"
+	"github.com/DigitalChinaOpenSource/DCParser/mysql"
 )
 
 // UnspecifiedLength is unspecified length.

@@ -16,9 +16,9 @@ package ast_test
 import (
 	"testing"
 
+	"github.com/DigitalChinaOpenSource/DCParser"
+	"github.com/DigitalChinaOpenSource/DCParser/ast"
 	. "github.com/pingcap/check"
-	"github.com/pingcap/parser"
-	"github.com/pingcap/parser/ast"
 )
 
 func TestT(t *testing.T) {

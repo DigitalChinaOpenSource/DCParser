@@ -19,9 +19,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/DigitalChinaOpenSource/DCParser/mysql"
+	"github.com/DigitalChinaOpenSource/DCParser/types"
 	. "github.com/pingcap/check"
-	"github.com/pingcap/parser/mysql"
-	"github.com/pingcap/parser/types"
 )
 
 func TestT(t *testing.T) {

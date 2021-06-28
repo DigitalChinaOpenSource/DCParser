@@ -1,5 +1,9 @@
 # DCParser - SQL Parser optimized based on PingCAP/parser
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/DigitalChinaOpenSource/DCParser)](https://goreportcard.com/report/github.com/DigitalChinaOpenSource/DCParser)
+[![GoDoc](https://godoc.org/github.com/DigitalChinaOpenSource/DCParser?status.svg)](https://godoc.org/github.com/DigitalChinaOpenSource/DCParser)
+[![codecov](https://codecov.io/gh/DigitalChinaOpenSource/DCParser/branch/main/graph/badge.svg?token=6MGSRZAQE0)](https://codecov.io/gh/DigitalChinaOpenSource/DCParser)
+
 ## Introduction
 
 DCParser is a single project built for compatibility with TiDB for PostgreSQL. It is based on PingCAP/parser, but it is difficult to merge into the original parser repository because there are many changes. So a new project is created to provide parsing abilities for TiDB for PostgreSQL.

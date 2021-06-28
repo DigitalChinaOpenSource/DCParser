@@ -5,7 +5,7 @@ This is an example showing how to parse a text SQL into an AST tree.
 ```go
 import (
 	"fmt"
-	"github.com/pingcap/parser"
+	"github.com/DigitalChinaOpenSource/DCParser"
 	_ "github.com/pingcap/tidb/types/parser_driver"
 )
 

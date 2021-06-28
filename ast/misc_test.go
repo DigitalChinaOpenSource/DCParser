@@ -14,11 +14,11 @@
 package ast_test
 
 import (
+	"github.com/DigitalChinaOpenSource/DCParser"
+	. "github.com/DigitalChinaOpenSource/DCParser/ast"
+	"github.com/DigitalChinaOpenSource/DCParser/auth"
+	"github.com/DigitalChinaOpenSource/DCParser/mysql"
 	. "github.com/pingcap/check"
-	"github.com/pingcap/parser"
-	. "github.com/pingcap/parser/ast"
-	"github.com/pingcap/parser/auth"
-	"github.com/pingcap/parser/mysql"
 )
 
 var _ = Suite(&testMiscSuite{})

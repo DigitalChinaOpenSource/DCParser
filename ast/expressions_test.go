@@ -14,10 +14,10 @@
 package ast_test
 
 import (
+	. "github.com/DigitalChinaOpenSource/DCParser/ast"
+	"github.com/DigitalChinaOpenSource/DCParser/format"
+	"github.com/DigitalChinaOpenSource/DCParser/mysql"
 	. "github.com/pingcap/check"
-	. "github.com/pingcap/parser/ast"
-	"github.com/pingcap/parser/format"
-	"github.com/pingcap/parser/mysql"
 )
 
 var _ = Suite(&testExpressionsSuite{})
