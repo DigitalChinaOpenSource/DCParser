@@ -3792,43 +3792,53 @@ DoStmt:
  *
  *******************************************************************/
 DeleteWithoutUsingStmt:
-	"DELETE" TableOptimizerHints PriorityOpt QuickOptional IgnoreOptional "FROM" TableName PartitionNameListOpt TableAsNameOpt IndexHintListOpt WhereClauseOptional OrderByOptional LimitClause
+	"DELETE" TableOptimizerHints PriorityOpt QuickOptional "FROM" TableName TableAsNameOpt WhereClauseOptional
 	{
 		// Single Table
-		tn := $7.(*ast.TableName)
-		tn.IndexHints = $10.([]*ast.IndexHint)
-		tn.PartitionNames = $8.([]model.CIStr)
-		join := &ast.Join{Left: &ast.TableSource{Source: tn, AsName: $9.(model.CIStr)}, Right: nil}
+		tn := $6.(*ast.TableName)
+		join := &ast.Join{Left: &ast.TableSource{Source: tn, AsName: $7.(model.CIStr)}, Right: nil}
 		x := &ast.DeleteStmt{
 			TableRefs: &ast.TableRefsClause{TableRefs: join},
 			Priority:  $3.(mysql.PriorityEnum),
 			Quick:     $4.(bool),
-			IgnoreErr: $5.(bool),
 		}
 		if $2 != nil {
 			x.TableHints = $2.([]*ast.TableOptimizerHint)
 		}
-		if $11 != nil {
-			x.Where = $11.(ast.ExprNode)
-		}
-		if $12 != nil {
-			x.Order = $12.(*ast.OrderByClause)
-		}
-		if $13 != nil {
-			x.Limit = $13.(*ast.Limit)
+		if $8 != nil {
+			x.Where = $8.(ast.ExprNode)
 		}
 
 		$$ = x
 	}
-|	"DELETE" TableOptimizerHints PriorityOpt QuickOptional IgnoreOptional TableAliasRefList "FROM" TableRefs WhereClauseOptional
+|	"DELETE" TableOptimizerHints PriorityOpt QuickOptional TableAliasRefList "FROM" TableRefs WhereClauseOptional
 	{
 		// Multiple Table
 		x := &ast.DeleteStmt{
 			Priority:     $3.(mysql.PriorityEnum),
 			Quick:        $4.(bool),
-			IgnoreErr:    $5.(bool),
 			IsMultiTable: true,
 			BeforeFrom:   true,
+			Tables:       &ast.DeleteTableList{Tables: $5.([]*ast.TableName)},
+			TableRefs:    &ast.TableRefsClause{TableRefs: $7.(*ast.Join)},
+		}
+		if $2 != nil {
+			x.TableHints = $2.([]*ast.TableOptimizerHint)
+		}
+		if $8 != nil {
+			x.Where = $8.(ast.ExprNode)
+		}
+		$$ = x
+	}
+
+DeleteWithUsingStmt:
+	"DELETE" TableOptimizerHints PriorityOpt QuickOptional "FROM" TableAliasRefList "USING" TableRefs WhereClauseOptional
+	{
+		// Multiple Table
+		x := &ast.DeleteStmt{
+			Priority:     $3.(mysql.PriorityEnum),
+			Quick:        $4.(bool),
+			IsMultiTable: true,
 			Tables:       &ast.DeleteTableList{Tables: $6.([]*ast.TableName)},
 			TableRefs:    &ast.TableRefsClause{TableRefs: $8.(*ast.Join)},
 		}
@@ -3837,27 +3847,6 @@ DeleteWithoutUsingStmt:
 		}
 		if $9 != nil {
 			x.Where = $9.(ast.ExprNode)
-		}
-		$$ = x
-	}
-
-DeleteWithUsingStmt:
-	"DELETE" TableOptimizerHints PriorityOpt QuickOptional IgnoreOptional "FROM" TableAliasRefList "USING" TableRefs WhereClauseOptional
-	{
-		// Multiple Table
-		x := &ast.DeleteStmt{
-			Priority:     $3.(mysql.PriorityEnum),
-			Quick:        $4.(bool),
-			IgnoreErr:    $5.(bool),
-			IsMultiTable: true,
-			Tables:       &ast.DeleteTableList{Tables: $7.([]*ast.TableName)},
-			TableRefs:    &ast.TableRefsClause{TableRefs: $9.(*ast.Join)},
-		}
-		if $2 != nil {
-			x.TableHints = $2.([]*ast.TableOptimizerHint)
-		}
-		if $10 != nil {
-			x.Where = $10.(ast.ExprNode)
 		}
 		$$ = x
 	}
