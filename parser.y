@@ -277,6 +277,7 @@ import (
 	yearMonth         "YEAR_MONTH"
 	zerofill          "ZEROFILL"
 	natural           "NATURAL"
+	returning		  "RETURNING"
 
 	/* The following tokens belong to UnReservedKeyword. Notice: make sure these tokens are contained in UnReservedKeyword. */
 	account               "ACCOUNT"
@@ -1196,6 +1197,8 @@ import (
 	BRIEBooleanOptionName                  "Name of a BRIE option which takes a boolean as input"
 	BRIEStringOptionName                   "Name of a BRIE option which takes a string as input"
 	BRIEKeywordOptionName                  "Name of a BRIE option which takes a case-insensitive string as input"
+	ReturningClause						   "Returning Clause"
+	ReturningOptional	                   "Returning option"
 
 %type	<ident>
 	AsOpt             "AS or EmptyString"
@@ -3792,7 +3795,7 @@ DoStmt:
  *
  *******************************************************************/
 DeleteWithoutUsingStmt:
-	"DELETE" TableOptimizerHints PriorityOpt QuickOptional "FROM" TableName TableAsNameOpt WhereClauseOptional
+	"DELETE" TableOptimizerHints PriorityOpt QuickOptional "FROM" TableName TableAsNameOpt WhereClauseOptional ReturningOptional
 	{
 		// Single Table
 		tn := $6.(*ast.TableName)
@@ -3808,10 +3811,13 @@ DeleteWithoutUsingStmt:
 		if $8 != nil {
 			x.Where = $8.(ast.ExprNode)
 		}
+		if $9 != nil {
+			x.Returning = $9.(*ast.ReturningClause)
+		}
 
 		$$ = x
 	}
-|	"DELETE" TableOptimizerHints PriorityOpt QuickOptional TableAliasRefList "FROM" TableRefs WhereClauseOptional
+|	"DELETE" TableOptimizerHints PriorityOpt QuickOptional TableAliasRefList "FROM" TableRefs WhereClauseOptional ReturningOptional
 	{
 		// Multiple Table
 		x := &ast.DeleteStmt{
@@ -3828,11 +3834,15 @@ DeleteWithoutUsingStmt:
 		if $8 != nil {
 			x.Where = $8.(ast.ExprNode)
 		}
+		if $9 != nil {
+			x.Returning = $9.(*ast.ReturningClause)
+		}
+		
 		$$ = x
 	}
 
 DeleteWithUsingStmt:
-	"DELETE" TableOptimizerHints PriorityOpt QuickOptional "FROM" TableAliasRefList "USING" TableRefs WhereClauseOptional
+	"DELETE" TableOptimizerHints PriorityOpt QuickOptional "FROM" TableAliasRefList "USING" TableRefs WhereClauseOptional ReturningOptional
 	{
 		// Multiple Table
 		x := &ast.DeleteStmt{
@@ -3848,6 +3858,10 @@ DeleteWithUsingStmt:
 		if $9 != nil {
 			x.Where = $9.(ast.ExprNode)
 		}
+		if $10 != nil {
+			x.Returning = $10.(*ast.ReturningClause)
+		}
+
 		$$ = x
 	}
 
@@ -11824,6 +11838,9 @@ EncryptionOpt:
 		$$ = $1
 	}
 
+/********************************************************************
+* TiDB for PostgreSQL
+ *******************************************************************/
 PgParamMarker:
 	'$' LengthNum
 	{
@@ -11833,4 +11850,19 @@ PgParamMarker:
 		x.SetOrder(int($2.(uint64)))
 		$$ = x
 	}
+
+ReturningClause:
+	"RETURNING" SelectStmtFieldList
+	{
+		$$ = &ast.ReturningClause{Fields:$2.(*ast.FieldList)}
+	}
+ReturningOptional:
+	{
+		$$ = nil
+	}
+|	ReturningClause
+	{
+		$$ = $1
+	}
+
 %%
