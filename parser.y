@@ -277,6 +277,7 @@ import (
 	yearMonth         "YEAR_MONTH"
 	zerofill          "ZEROFILL"
 	natural           "NATURAL"
+	returning		  "RETURNING"
 
 	/* The following tokens belong to UnReservedKeyword. Notice: make sure these tokens are contained in UnReservedKeyword. */
 	account               "ACCOUNT"
@@ -1196,6 +1197,8 @@ import (
 	BRIEBooleanOptionName                  "Name of a BRIE option which takes a boolean as input"
 	BRIEStringOptionName                   "Name of a BRIE option which takes a string as input"
 	BRIEKeywordOptionName                  "Name of a BRIE option which takes a case-insensitive string as input"
+	ReturningClause						   "Returning Clause"
+	ReturningOptional	                   "Returning option"
 
 %type	<ident>
 	AsOpt             "AS or EmptyString"
@@ -3792,43 +3795,60 @@ DoStmt:
  *
  *******************************************************************/
 DeleteWithoutUsingStmt:
-	"DELETE" TableOptimizerHints PriorityOpt QuickOptional IgnoreOptional "FROM" TableName PartitionNameListOpt TableAsNameOpt IndexHintListOpt WhereClauseOptional OrderByOptional LimitClause
+	"DELETE" TableOptimizerHints PriorityOpt QuickOptional "FROM" TableName TableAsNameOpt WhereClauseOptional ReturningOptional
 	{
 		// Single Table
-		tn := $7.(*ast.TableName)
-		tn.IndexHints = $10.([]*ast.IndexHint)
-		tn.PartitionNames = $8.([]model.CIStr)
-		join := &ast.Join{Left: &ast.TableSource{Source: tn, AsName: $9.(model.CIStr)}, Right: nil}
+		tn := $6.(*ast.TableName)
+		join := &ast.Join{Left: &ast.TableSource{Source: tn, AsName: $7.(model.CIStr)}, Right: nil}
 		x := &ast.DeleteStmt{
 			TableRefs: &ast.TableRefsClause{TableRefs: join},
 			Priority:  $3.(mysql.PriorityEnum),
 			Quick:     $4.(bool),
-			IgnoreErr: $5.(bool),
 		}
 		if $2 != nil {
 			x.TableHints = $2.([]*ast.TableOptimizerHint)
 		}
-		if $11 != nil {
-			x.Where = $11.(ast.ExprNode)
+		if $8 != nil {
+			x.Where = $8.(ast.ExprNode)
 		}
-		if $12 != nil {
-			x.Order = $12.(*ast.OrderByClause)
-		}
-		if $13 != nil {
-			x.Limit = $13.(*ast.Limit)
+		if $9 != nil {
+			x.Returning = $9.(*ast.ReturningClause)
 		}
 
 		$$ = x
 	}
-|	"DELETE" TableOptimizerHints PriorityOpt QuickOptional IgnoreOptional TableAliasRefList "FROM" TableRefs WhereClauseOptional
+|	"DELETE" TableOptimizerHints PriorityOpt QuickOptional TableAliasRefList "FROM" TableRefs WhereClauseOptional ReturningOptional
 	{
 		// Multiple Table
 		x := &ast.DeleteStmt{
 			Priority:     $3.(mysql.PriorityEnum),
 			Quick:        $4.(bool),
-			IgnoreErr:    $5.(bool),
 			IsMultiTable: true,
 			BeforeFrom:   true,
+			Tables:       &ast.DeleteTableList{Tables: $5.([]*ast.TableName)},
+			TableRefs:    &ast.TableRefsClause{TableRefs: $7.(*ast.Join)},
+		}
+		if $2 != nil {
+			x.TableHints = $2.([]*ast.TableOptimizerHint)
+		}
+		if $8 != nil {
+			x.Where = $8.(ast.ExprNode)
+		}
+		if $9 != nil {
+			x.Returning = $9.(*ast.ReturningClause)
+		}
+		
+		$$ = x
+	}
+
+DeleteWithUsingStmt:
+	"DELETE" TableOptimizerHints PriorityOpt QuickOptional "FROM" TableAliasRefList "USING" TableRefs WhereClauseOptional ReturningOptional
+	{
+		// Multiple Table
+		x := &ast.DeleteStmt{
+			Priority:     $3.(mysql.PriorityEnum),
+			Quick:        $4.(bool),
+			IsMultiTable: true,
 			Tables:       &ast.DeleteTableList{Tables: $6.([]*ast.TableName)},
 			TableRefs:    &ast.TableRefsClause{TableRefs: $8.(*ast.Join)},
 		}
@@ -3838,27 +3858,10 @@ DeleteWithoutUsingStmt:
 		if $9 != nil {
 			x.Where = $9.(ast.ExprNode)
 		}
-		$$ = x
-	}
-
-DeleteWithUsingStmt:
-	"DELETE" TableOptimizerHints PriorityOpt QuickOptional IgnoreOptional "FROM" TableAliasRefList "USING" TableRefs WhereClauseOptional
-	{
-		// Multiple Table
-		x := &ast.DeleteStmt{
-			Priority:     $3.(mysql.PriorityEnum),
-			Quick:        $4.(bool),
-			IgnoreErr:    $5.(bool),
-			IsMultiTable: true,
-			Tables:       &ast.DeleteTableList{Tables: $7.([]*ast.TableName)},
-			TableRefs:    &ast.TableRefsClause{TableRefs: $9.(*ast.Join)},
-		}
-		if $2 != nil {
-			x.TableHints = $2.([]*ast.TableOptimizerHint)
-		}
 		if $10 != nil {
-			x.Where = $10.(ast.ExprNode)
+			x.Returning = $10.(*ast.ReturningClause)
 		}
+
 		$$ = x
 	}
 
@@ -11835,6 +11838,9 @@ EncryptionOpt:
 		$$ = $1
 	}
 
+/********************************************************************
+* TiDB for PostgreSQL
+ *******************************************************************/
 PgParamMarker:
 	'$' LengthNum
 	{
@@ -11844,4 +11850,19 @@ PgParamMarker:
 		x.SetOrder(int($2.(uint64)))
 		$$ = x
 	}
+
+ReturningClause:
+	"RETURNING" SelectStmtFieldList
+	{
+		$$ = &ast.ReturningClause{Fields:$2.(*ast.FieldList)}
+	}
+ReturningOptional:
+	{
+		$$ = nil
+	}
+|	ReturningClause
+	{
+		$$ = $1
+	}
+
 %%
