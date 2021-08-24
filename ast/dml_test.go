@@ -252,6 +252,9 @@ func (tc *testDMLSuite) TestDeleteTableListRestore(c *C) {
 	RunNodeRestoreTest(c, testCases, "DELETE FROM %s USING t1, t2;", extractNodeFunc)
 }
 
+/* PostgreSQL does not support use index
+// https://stackoverflow.com/questions/309786/how-do-i-force-postgres-to-use-a-particular-index
+// https://www.2ndquadrant.com/en/blog/hinting_at_postgresql/
 func (tc *testDMLSuite) TestDeleteTableIndexHintRestore(c *C) {
 	testCases := []NodeRestoreTestCase{
 		{"DELETE FROM t1 USE key (`fld1`) WHERE fld=1",
@@ -264,7 +267,7 @@ func (tc *testDMLSuite) TestDeleteTableIndexHintRestore(c *C) {
 		return node.(*DeleteStmt)
 	}
 	RunNodeRestoreTest(c, testCases, "%s", extractNodeFunc)
-}
+}*/
 
 func (tc *testExpressionsSuite) TestByItemRestore(c *C) {
 	testCases := []NodeRestoreTestCase{

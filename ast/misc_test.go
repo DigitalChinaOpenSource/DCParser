@@ -14,9 +14,8 @@
 package ast_test
 
 import (
-	"github.com/DigitalChinaOpenSource/DCParser"
+	parser "github.com/DigitalChinaOpenSource/DCParser"
 	. "github.com/DigitalChinaOpenSource/DCParser/ast"
-	"github.com/DigitalChinaOpenSource/DCParser/auth"
 	"github.com/DigitalChinaOpenSource/DCParser/mysql"
 	. "github.com/pingcap/check"
 )
@@ -112,7 +111,7 @@ constraint foreign key (jobabbr) references ffxi_jobtype (jobabbr) on delete cas
 }
 
 func (ts *testMiscSuite) TestDMLVistorCover(c *C) {
-	sql := `delete from somelog where user = 'jcole' order by timestamp_column limit 1;
+	sql := `delete from somelog where user = 'jcole';
 delete t1, t2 from t1 inner join t2 inner join t3 where t1.id=t2.id and t2.id=t3.id;
 select * from t where exists(select * from t k where t.c = k.c having sum(c) = 1);
 insert into t_copy select * from t where t.x > 5;
@@ -176,7 +175,9 @@ func (ts *testMiscSuite) TestSensitiveStatement(c *C) {
 	}
 }
 
-func (ts *testMiscSuite) TestUserSpec(c *C) {
+// It is a legacy test case for EncodePassword
+// so commented out
+/*func (ts *testMiscSuite) TestUserSpec(c *C) {
 	hashString := "*3D56A309CD04FA2EEF181462E59011F075C89548"
 	u := UserSpec{
 		User: &auth.UserIdentity{
@@ -205,7 +206,7 @@ func (ts *testMiscSuite) TestUserSpec(c *C) {
 	pwd, ok = u.EncodedPassword()
 	c.Assert(ok, IsTrue)
 	c.Assert(pwd, Equals, "")
-}
+}*/
 
 func (ts *testMiscSuite) TestTableOptimizerHintRestore(c *C) {
 	testCases := []NodeRestoreTestCase{
