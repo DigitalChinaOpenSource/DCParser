@@ -277,7 +277,7 @@ import (
 	yearMonth         "YEAR_MONTH"
 	zerofill          "ZEROFILL"
 	natural           "NATURAL"
-	returning		  "RETURNING"
+	returning         "RETURNING"
 
 	/* The following tokens belong to UnReservedKeyword. Notice: make sure these tokens are contained in UnReservedKeyword. */
 	account               "ACCOUNT"
@@ -1197,8 +1197,8 @@ import (
 	BRIEBooleanOptionName                  "Name of a BRIE option which takes a boolean as input"
 	BRIEStringOptionName                   "Name of a BRIE option which takes a string as input"
 	BRIEKeywordOptionName                  "Name of a BRIE option which takes a case-insensitive string as input"
-	ReturningClause						   "Returning Clause"
-	ReturningOptional	                   "Returning option"
+	ReturningClause                        "Returning Clause"
+	ReturningOptional                      "Returning option"
 
 %type	<ident>
 	AsOpt             "AS or EmptyString"
@@ -2321,6 +2321,16 @@ BeginTransactionStmt:
 	"BEGIN"
 	{
 		$$ = &ast.BeginStmt{}
+	}
+|	"BEGIN" "READ" "WRITE"
+	{
+		$$ = &ast.BeginStmt{}
+	}
+|	"BEGIN" "READ" "ONLY"
+	{
+		$$ = &ast.BeginStmt{
+			ReadOnly: true,
+		}
 	}
 |	"BEGIN" "PESSIMISTIC"
 	{
@@ -3837,7 +3847,7 @@ DeleteWithoutUsingStmt:
 		if $9 != nil {
 			x.Returning = $9.(*ast.ReturningClause)
 		}
-		
+
 		$$ = x
 	}
 
@@ -11854,8 +11864,9 @@ PgParamMarker:
 ReturningClause:
 	"RETURNING" SelectStmtFieldList
 	{
-		$$ = &ast.ReturningClause{Fields:$2.(*ast.FieldList)}
+		$$ = &ast.ReturningClause{Fields: $2.(*ast.FieldList)}
 	}
+
 ReturningOptional:
 	{
 		$$ = nil
@@ -11864,5 +11875,4 @@ ReturningOptional:
 	{
 		$$ = $1
 	}
-
 %%
