@@ -3803,73 +3803,60 @@ DoStmt:
  *
  *  Delete Statement
  *
+ * PostgreSQL: https://www.postgresql.org/docs/current/sql-delete.html
+ *
  *******************************************************************/
 DeleteWithoutUsingStmt:
-	"DELETE" TableOptimizerHints PriorityOpt QuickOptional "FROM" TableName TableAsNameOpt WhereClauseOptional ReturningOptional
+	"DELETE" "FROM" TableName TableAsNameOpt WhereClauseOptional ReturningOptional
 	{
 		// Single Table
-		tn := $6.(*ast.TableName)
-		join := &ast.Join{Left: &ast.TableSource{Source: tn, AsName: $7.(model.CIStr)}, Right: nil}
+		tn := $3.(*ast.TableName)
+		join := &ast.Join{Left: &ast.TableSource{Source: tn, AsName: $4.(model.CIStr)}, Right: nil}
 		x := &ast.DeleteStmt{
 			TableRefs: &ast.TableRefsClause{TableRefs: join},
-			Priority:  $3.(mysql.PriorityEnum),
-			Quick:     $4.(bool),
 		}
-		if $2 != nil {
-			x.TableHints = $2.([]*ast.TableOptimizerHint)
+		if $5 != nil {
+			x.Where = $5.(ast.ExprNode)
 		}
-		if $8 != nil {
-			x.Where = $8.(ast.ExprNode)
-		}
-		if $9 != nil {
-			x.Returning = $9.(*ast.ReturningClause)
+		if $6 != nil {
+			x.Returning = $6.(*ast.ReturningClause)
 		}
 
 		$$ = x
 	}
-|	"DELETE" TableOptimizerHints PriorityOpt QuickOptional TableAliasRefList "FROM" TableRefs WhereClauseOptional ReturningOptional
+|	"DELETE" TableAliasRefList "FROM" TableRefs WhereClauseOptional ReturningOptional
 	{
 		// Multiple Table
 		x := &ast.DeleteStmt{
-			Priority:     $3.(mysql.PriorityEnum),
-			Quick:        $4.(bool),
 			IsMultiTable: true,
 			BeforeFrom:   true,
-			Tables:       &ast.DeleteTableList{Tables: $5.([]*ast.TableName)},
-			TableRefs:    &ast.TableRefsClause{TableRefs: $7.(*ast.Join)},
+			Tables:       &ast.DeleteTableList{Tables: $2.([]*ast.TableName)},
+			TableRefs:    &ast.TableRefsClause{TableRefs: $4.(*ast.Join)},
 		}
-		if $2 != nil {
-			x.TableHints = $2.([]*ast.TableOptimizerHint)
+		if $5 != nil {
+			x.Where = $5.(ast.ExprNode)
 		}
-		if $8 != nil {
-			x.Where = $8.(ast.ExprNode)
-		}
-		if $9 != nil {
-			x.Returning = $9.(*ast.ReturningClause)
+		if $6 != nil {
+			x.Returning = $6.(*ast.ReturningClause)
 		}
 
 		$$ = x
 	}
 
 DeleteWithUsingStmt:
-	"DELETE" TableOptimizerHints PriorityOpt QuickOptional "FROM" TableAliasRefList "USING" TableRefs WhereClauseOptional ReturningOptional
+	"DELETE" "FROM" TableAliasRefList "USING" TableRefs WhereClauseOptional ReturningOptional
 	{
 		// Multiple Table
 		x := &ast.DeleteStmt{
-			Priority:     $3.(mysql.PriorityEnum),
-			Quick:        $4.(bool),
 			IsMultiTable: true,
-			Tables:       &ast.DeleteTableList{Tables: $6.([]*ast.TableName)},
-			TableRefs:    &ast.TableRefsClause{TableRefs: $8.(*ast.Join)},
+			Tables:       &ast.DeleteTableList{Tables: $3.([]*ast.TableName)},
+			TableRefs:    &ast.TableRefsClause{TableRefs: $5.(*ast.Join)},
 		}
-		if $2 != nil {
-			x.TableHints = $2.([]*ast.TableOptimizerHint)
+		if $6 != nil {
+			x.Where = $6.(ast.ExprNode)
 		}
-		if $9 != nil {
-			x.Where = $9.(ast.ExprNode)
-		}
-		if $10 != nil {
-			x.Returning = $10.(*ast.ReturningClause)
+		if $7 != nil {
+			x.Returning = $7.(*ast.ReturningClause)
 		}
 
 		$$ = x
