@@ -2322,6 +2322,16 @@ BeginTransactionStmt:
 	{
 		$$ = &ast.BeginStmt{}
 	}
+|	"BEGIN" "READ" "WRITE"
+	{
+		$$ = &ast.BeginStmt{}
+	}
+|	"BEGIN" "READ" "ONLY"
+	{
+		$$ = &ast.BeginStmt{
+			ReadOnly: true,
+		}
+	}
 |	"BEGIN" "PESSIMISTIC"
 	{
 		$$ = &ast.BeginStmt{
