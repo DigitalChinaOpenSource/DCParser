@@ -2341,6 +2341,12 @@ BeginTransactionStmt:
 			Mode: ast.Optimistic,
 		}
 	}
+|	"BEGIN" "ISOLATION" "LEVEL" IsolationLevel
+	{
+		$$ = &ast.BeginStmt{
+			IsolationLevel: $4,
+		}
+	}
 |	"START" "TRANSACTION"
 	{
 		$$ = &ast.BeginStmt{}
@@ -2364,6 +2370,12 @@ BeginTransactionStmt:
 		$$ = &ast.BeginStmt{
 			ReadOnly: true,
 			Bound:    $8.(*ast.TimestampBound),
+		}
+	}
+|	"START" "TRANSACTION" "ISOLATION" "LEVEL" IsolationLevel
+	{
+		$$ = &ast.BeginStmt{
+			IsolationLevel: $5,
 		}
 	}
 

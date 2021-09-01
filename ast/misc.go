@@ -379,9 +379,10 @@ func (n *ExecuteStmt) Accept(v Visitor) (Node, bool) {
 // See https://dev.mysql.com/doc/refman/5.7/en/commit.html
 type BeginStmt struct {
 	stmtNode
-	Mode     string
-	ReadOnly bool
-	Bound    *TimestampBound
+	Mode           string
+	ReadOnly       bool
+	Bound          *TimestampBound
+	IsolationLevel string
 }
 
 // Restore implements Node interface.
@@ -409,6 +410,19 @@ func (n *BeginStmt) Restore(ctx *format.RestoreCtx) error {
 			}
 		} else {
 			ctx.WriteKeyWord("START TRANSACTION")
+			if n.IsolationLevel != "" {
+				switch n.IsolationLevel {
+				case ReadCommitted:
+					ctx.WriteKeyWord(" ISOLATION LEVEL READ COMMITTED")
+				case ReadUncommitted:
+					ctx.WriteKeyWord(" ISOLATION LEVEL READ UNCOMMITTED")
+				case Serializable:
+					ctx.WriteKeyWord(" ISOLATION LEVEL SERIALIZABLE")
+				case RepeatableRead:
+					ctx.WriteKeyWord(" ISOLATION LEVEL REPEATABLE READ")
+				}
+
+			}
 		}
 	} else {
 		ctx.WriteKeyWord("BEGIN ")
