@@ -2341,6 +2341,13 @@ BeginTransactionStmt:
 			Mode: ast.Optimistic,
 		}
 	}
+|	"BEGIN" "ISOLATION" "LEVEL" IsolationLevel
+	// supports for setting isolation level when starting transaction,
+	// currently it doesn't actually set anything
+	// TODO: Set isolation level before starting transaction
+	{
+		$$ = &ast.BeginStmt{}
+	}
 |	"START" "TRANSACTION"
 	{
 		$$ = &ast.BeginStmt{}

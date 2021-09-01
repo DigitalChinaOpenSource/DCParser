@@ -5029,6 +5029,11 @@ func (s *testParserSuite) TestStartTransaction(c *C) {
 		// For PG Transaction
 		{"BEGIN READ WRITE", true, "START TRANSACTION"},
 		{"BEGIN READ ONLY", true, "START TRANSACTION READ ONLY"},
+		// TODO: Change the restored statement once isolation mode is supported
+		{"BEGIN ISOLATION LEVEL SERIALIZABLE", true, "START TRANSACTION"},
+		{"BEGIN ISOLATION LEVEL REPEATABLE READ", true, "START TRANSACTION"},
+		{"BEGIN ISOLATION LEVEL READ COMMITTED", true, "START TRANSACTION"},
+		{"BEGIN ISOLATION LEVEL READ UNCOMMITTED", true, "START TRANSACTION"},
 	}
 
 	s.RunTest(c, cases)
