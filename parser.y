@@ -2342,11 +2342,10 @@ BeginTransactionStmt:
 		}
 	}
 |	"BEGIN" "ISOLATION" "LEVEL" IsolationLevel
-	// supports for setting isolation level when starting transaction,
-	// currently it doesn't actually set anything
-	// TODO: Set isolation level before starting transaction
 	{
-		$$ = &ast.BeginStmt{}
+		$$ = &ast.BeginStmt{
+			IsolationLevel: $4,
+		}
 	}
 |	"START" "TRANSACTION"
 	{
@@ -2371,6 +2370,12 @@ BeginTransactionStmt:
 		$$ = &ast.BeginStmt{
 			ReadOnly: true,
 			Bound:    $8.(*ast.TimestampBound),
+		}
+	}
+|	"START" "TRANSACTION" "ISOLATION" "LEVEL" IsolationLevel
+	{
+		$$ = &ast.BeginStmt{
+			IsolationLevel: $5,
 		}
 	}
 
