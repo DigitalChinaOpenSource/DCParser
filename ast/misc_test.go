@@ -177,7 +177,7 @@ func (ts *testMiscSuite) TestSensitiveStatement(c *C) {
 }
 
 func (ts *testMiscSuite) TestUserSpec(c *C) {
-	hashString := "*3D56A309CD04FA2EEF181462E59011F075C89548"
+	hashString := "md5a28c0db39ebac69d0f79fc390a31bc26"
 	u := UserSpec{
 		User: &auth.UserIdentity{
 			Username: "test",

@@ -103,12 +103,15 @@ func (s *testTErrorSuite) TestTraceAndLocation(c *C) {
 	stack := errors.ErrorStack(err)
 	lines := strings.Split(stack, "\n")
 	goroot := strings.ReplaceAll(runtime.GOROOT(), string(os.PathSeparator), "/")
+	// because Jenkins may put GOROOT in the same path as GOPATH, we have to add a /src to differentiate sysStack
+	goroot = goroot + "/src"
 	var sysStack = 0
 	for _, line := range lines {
 		if strings.Contains(line, goroot) {
 			sysStack++
 		}
 	}
+	// make sure the stack has correct number of system stack
 	c.Assert(len(lines)-(2*sysStack), Equals, 15, Commentf("stack =\n%s", stack))
 	var containTerr bool
 	for _, v := range lines {

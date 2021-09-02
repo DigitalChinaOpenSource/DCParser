@@ -2319,6 +2319,16 @@ BeginTransactionStmt:
 	{
 		$$ = &ast.BeginStmt{}
 	}
+|	"BEGIN" "READ" "WRITE"
+	{
+		$$ = &ast.BeginStmt{}
+	}
+|	"BEGIN" "READ" "ONLY"
+	{
+		$$ = &ast.BeginStmt{
+			ReadOnly: true,
+		}
+	}
 |	"BEGIN" "PESSIMISTIC"
 	{
 		$$ = &ast.BeginStmt{
@@ -2329,6 +2339,12 @@ BeginTransactionStmt:
 	{
 		$$ = &ast.BeginStmt{
 			Mode: ast.Optimistic,
+		}
+	}
+|	"BEGIN" "ISOLATION" "LEVEL" IsolationLevel
+	{
+		$$ = &ast.BeginStmt{
+			IsolationLevel: $4,
 		}
 	}
 |	"START" "TRANSACTION"
@@ -2354,6 +2370,12 @@ BeginTransactionStmt:
 		$$ = &ast.BeginStmt{
 			ReadOnly: true,
 			Bound:    $8.(*ast.TimestampBound),
+		}
+	}
+|	"START" "TRANSACTION" "ISOLATION" "LEVEL" IsolationLevel
+	{
+		$$ = &ast.BeginStmt{
+			IsolationLevel: $5,
 		}
 	}
 
