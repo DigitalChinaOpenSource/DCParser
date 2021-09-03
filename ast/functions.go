@@ -351,6 +351,7 @@ const (
 	PgFuncGetUserById          = "pg_get_userbyid"
 	PgFuncObjDescription       = "obj_description"
 	PgFuncShobjDescription     = "shobj_description"
+	PgFuncExtraFloatDigits   = "extra_float_digits"
 )
 
 // FuncCallExpr is for function expression.
