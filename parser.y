@@ -705,6 +705,9 @@ import (
 	builtinVarPop
 	builtinVarSamp
 
+	/* The following tokens are added for TiDB for Postgres. */
+	characteristics "CHARACTERISTICS"
+
 %token	<item>
 
 	/*yy:token "1.%d"   */
@@ -8152,6 +8155,10 @@ SetStmt:
 |	"SET" "SESSION" "TRANSACTION" TransactionChars
 	{
 		$$ = &ast.SetStmt{Variables: $4.([]*ast.VariableAssignment)}
+	}
+|	"SET" "SESSION" "CHARACTERISTICS" "AS" "TRANSACTION" TransactionChars
+	{
+		$$ = &ast.SetStmt{Variables: $6.([]*ast.VariableAssignment)}
 	}
 |	"SET" "TRANSACTION" TransactionChars
 	{
