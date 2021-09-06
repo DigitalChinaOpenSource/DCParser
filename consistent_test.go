@@ -33,6 +33,7 @@ type testConsistentSuite struct {
 	unreservedKeywords []string
 	notKeywordTokens   []string
 	tidbKeywords       []string
+	tidb4pgKeywords    []string
 }
 
 func (s *testConsistentSuite) SetUpSuite(c *C) {
@@ -48,12 +49,14 @@ func (s *testConsistentSuite) SetUpSuite(c *C) {
 	unreservedKeywordStartMarker := "\t/* The following tokens belong to UnReservedKeyword. Notice: make sure these tokens are contained in UnReservedKeyword. */"
 	notKeywordTokenStartMarker := "\t/* The following tokens belong to NotKeywordToken. Notice: make sure these tokens are contained in NotKeywordToken. */"
 	tidbKeywordStartMarker := "\t/* The following tokens belong to TiDBKeyword. Notice: make sure these tokens are contained in TiDBKeyword. */"
+	tidb4pgKeywordStartMarker := "\t/* The following tokens are added for TiDB for Postgres. */"
 	identTokenEndMarker := "%token\t<item>"
 
 	s.reservedKeywords = extractKeywords(s.content, reservedKeywordStartMarker, unreservedKeywordStartMarker)
 	s.unreservedKeywords = extractKeywords(s.content, unreservedKeywordStartMarker, notKeywordTokenStartMarker)
 	s.notKeywordTokens = extractKeywords(s.content, notKeywordTokenStartMarker, tidbKeywordStartMarker)
-	s.tidbKeywords = extractKeywords(s.content, tidbKeywordStartMarker, identTokenEndMarker)
+	s.tidbKeywords = extractKeywords(s.content, tidbKeywordStartMarker, tidb4pgKeywordStartMarker)
+	s.tidb4pgKeywords = extractKeywords(s.content, tidb4pgKeywordStartMarker, identTokenEndMarker)
 }
 
 func (s *testConsistentSuite) TestKeywordConsistent(c *C) {
@@ -61,7 +64,7 @@ func (s *testConsistentSuite) TestKeywordConsistent(c *C) {
 		c.Assert(k, Not(Equals), v)
 		c.Assert(tokenMap[k], Equals, tokenMap[v])
 	}
-	keywordCount := len(s.reservedKeywords) + len(s.unreservedKeywords) + len(s.notKeywordTokens) + len(s.tidbKeywords)
+	keywordCount := len(s.reservedKeywords) + len(s.unreservedKeywords) + len(s.notKeywordTokens) + len(s.tidbKeywords) + len(s.tidb4pgKeywords)
 	c.Assert(len(tokenMap)-len(aliases), Equals, keywordCount-len(windowFuncTokenMap))
 
 	unreservedCollectionDef := extractKeywordsFromCollectionDef(s.content, "\nUnReservedKeyword:")
@@ -72,6 +75,9 @@ func (s *testConsistentSuite) TestKeywordConsistent(c *C) {
 
 	tidbKeywordsCollectionDef := extractKeywordsFromCollectionDef(s.content, "\nTiDBKeyword:")
 	c.Assert(s.tidbKeywords, DeepEquals, tidbKeywordsCollectionDef)
+
+	tidb4pgKeywordsCollectionDef := extractKeywordsFromCollectionDef(s.content, "\nTiDB4PGKeyword:")
+	c.Assert(s.tidb4pgKeywords, DeepEquals, tidb4pgKeywordsCollectionDef)
 }
 
 func extractMiddle(str, startMarker, endMarker string) string {

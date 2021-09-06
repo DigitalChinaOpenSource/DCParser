@@ -200,6 +200,7 @@ var tokenMap = map[string]int{
 	"CHANGE":                   change,
 	"CHAR":                     charType,
 	"CHARACTER":                character,
+	"CHARACTERISTICS":          characteristics,
 	"CHARSET":                  charsetKwd,
 	"CHECK":                    check,
 	"CHECKPOINT":               checkpoint,
