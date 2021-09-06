@@ -1245,6 +1245,7 @@ import (
 	NotKeywordToken                 "Tokens not mysql keyword but treated specially"
 	UnReservedKeyword               "MySQL unreserved keywords"
 	TiDBKeyword                     "TiDB added keywords"
+	TiDB4PGKeyword                  "TiDB for Postgres added keywords"
 	FunctionNameConflict            "Built-in function call names which are conflict with keywords"
 	FunctionNameOptionalBraces      "Function with optional braces, all of them are reserved keywords."
 	FunctionNameDatetimePrecision   "Function with optional datetime precision, all of them are reserved keywords."
@@ -4984,6 +4985,7 @@ Identifier:
 |	UnReservedKeyword
 |	NotKeywordToken
 |	TiDBKeyword
+|	TiDB4PGKeyword
 
 UnReservedKeyword:
 	"ACTION"
@@ -5382,6 +5384,9 @@ NotKeywordToken:
 |	"FLASHBACK"
 |	"JSON_OBJECTAGG"
 |	"TLS"
+
+TiDB4PGKeyword:
+	"CHARACTERISTICS"
 
 /************************************************************************************
  *

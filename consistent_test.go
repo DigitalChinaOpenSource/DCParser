@@ -76,7 +76,7 @@ func (s *testConsistentSuite) TestKeywordConsistent(c *C) {
 	tidbKeywordsCollectionDef := extractKeywordsFromCollectionDef(s.content, "\nTiDBKeyword:")
 	c.Assert(s.tidbKeywords, DeepEquals, tidbKeywordsCollectionDef)
 
-	tidb4pgKeywordsCollectionDef := extractKeywordsFromCollectionDef(s.content, "\nTiDB4PGKeyword::")
+	tidb4pgKeywordsCollectionDef := extractKeywordsFromCollectionDef(s.content, "\nTiDB4PGKeyword:")
 	c.Assert(s.tidb4pgKeywords, DeepEquals, tidb4pgKeywordsCollectionDef)
 }
 
