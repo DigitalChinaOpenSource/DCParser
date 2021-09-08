@@ -742,7 +742,7 @@ import (
 %type	<expr>
 	PgParamMarker          "Postgresql Prepare query paramMarker"
 	Expression             "expression"
-	SpecialExpr		   	   "special expression"
+	SpecialExpr            "special expression"
 	MaxValueOrExpression   "maxvalue or expression"
 	BoolPri                "boolean primary expression"
 	ExprOrDefault          "expression or default"
@@ -751,7 +751,7 @@ import (
 	BitExpr                "bit expression"
 	SimpleExpr             "simple expression"
 	SimpleIdent            "Simple Identifier expression"
-	FunctionExpr		   "Function expression"
+	FunctionExpr           "Function expression"
 	SumExpr                "aggregate functions"
 	FunctionCallGeneric    "Function call with Identifier"
 	FunctionCallKeyword    "Function call with keyword as function name"
