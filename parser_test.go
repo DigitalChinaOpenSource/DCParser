@@ -1918,8 +1918,8 @@ func (s *testParserSuite) TestBuiltin(c *C) {
 		{"select NeXt vAluE for seQuEncE2", true, "SELECT NEXTVAL(`seQuEncE2`)"},
 
 		//for select "schema.function" stmt.
-		{"SELECT pg_catalog.set_config('search_path', '', false);", true, "SELECT `pg_catalog`.SET_CONFIG(_UTF8MB4'search_path', '' , FALSE)"},
-		{"SELECT postgres.set_config('search_path', '', false);", true, "SELECT `pg_catalog`.SET_CONFIG(_UTF8MB4'search_path', '' , FALSE)"},
+		{"SELECT postgres.current_user();",true,""},
+		{"SELECT pg_catalog.set_config('search_path', '', false);", true, ""},
 	}
 	s.RunTest(c, table)
 
