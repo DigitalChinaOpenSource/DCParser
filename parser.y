@@ -742,7 +742,6 @@ import (
 %type	<expr>
 	PgParamMarker          "Postgresql Prepare query paramMarker"
 	Expression             "expression"
-	SpecialExpr            "special expression"
 	MaxValueOrExpression   "maxvalue or expression"
 	BoolPri                "boolean primary expression"
 	ExprOrDefault          "expression or default"
@@ -4727,11 +4726,18 @@ Field:
 		wildCard := &ast.WildCardField{Schema: model.NewCIStr($1), Table: model.NewCIStr($3)}
 		$$ = &ast.SelectField{WildCard: wildCard}
 	}
-|	SpecialExpr FieldAsNameOpt
+|	Expression FieldAsNameOpt
 	{
 		expr := $1
 		asName := $2.(string)
 		$$ = &ast.SelectField{Expr: expr, AsName: model.NewCIStr(asName)}
+	}
+|	Identifier '.' FunctionExpr FieldAsNameOpt
+	{
+		pgSchema := &ast.PgSchemaField{Schema: model.NewCIStr($1)}
+		expr := $3
+        asName := $4.(string)
+        $$ = &ast.SelectField{Expr: expr, AsName: model.NewCIStr(asName), PgSchema: pgSchema}
 	}
 |	'{' Identifier Expression '}' FieldAsNameOpt
 	{
@@ -4744,15 +4750,6 @@ Field:
 		$$ = &ast.SelectField{Expr: expr, AsName: model.NewCIStr(asName)}
 	}
 
-SpecialExpr:
-	Expression
-	{
-		$$ = $1
-	}
-|	Identifier '.' FunctionExpr
-	{
-		$$ = $3
-	}
 
 FieldAsNameOpt:
 	/* EMPTY */

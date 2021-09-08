@@ -1214,6 +1214,11 @@ func (s *testParserSuite) TestExpression(c *C) {
 
 func (s *testParserSuite) TestBuiltin(c *C) {
 	table := []testCase{
+		//for select "schema.function" stmt.
+		{"SELECT postgres.count(1)", true, "SELECT `postgres`.COUNT(1)"},
+		{"SELECT postgres.current_user()", true, "SELECT `postgres`.CURRENT_USER()"},
+		{"SELECT pg_catalog.set_config('search_path', '', false);", true, "SELECT `pg_catalog`.SET_CONFIG(_UTF8MB4'search_path', _UTF8MB4'', FALSE)"},
+
 		// for builtin functions
 		{"SELECT POW(1, 2)", true, "SELECT POW(1, 2)"},
 		{"SELECT POW(1, 2, 1)", true, "SELECT POW(1, 2, 1)"}, // illegal number of arguments shall pass too
@@ -1917,9 +1922,6 @@ func (s *testParserSuite) TestBuiltin(c *C) {
 		{"select next value for sequence", true, "SELECT NEXTVAL(`sequence`)"},
 		{"select NeXt vAluE for seQuEncE2", true, "SELECT NEXTVAL(`seQuEncE2`)"},
 
-		//for select "schema.function" stmt.
-		{"SELECT postgres.current_user();", true, ""},
-		{"SELECT pg_catalog.set_config('search_path', '', false);", true, ""},
 	}
 	s.RunTest(c, table)
 
