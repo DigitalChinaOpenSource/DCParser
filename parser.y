@@ -742,6 +742,7 @@ import (
 %type	<expr>
 	PgParamMarker          "Postgresql Prepare query paramMarker"
 	Expression             "expression"
+	SpecialExpr		   	   "special expression"
 	MaxValueOrExpression   "maxvalue or expression"
 	BoolPri                "boolean primary expression"
 	ExprOrDefault          "expression or default"
@@ -750,6 +751,7 @@ import (
 	BitExpr                "bit expression"
 	SimpleExpr             "simple expression"
 	SimpleIdent            "Simple Identifier expression"
+	FunctionExpr		   "Function expression"
 	SumExpr                "aggregate functions"
 	FunctionCallGeneric    "Function call with Identifier"
 	FunctionCallKeyword    "Function call with keyword as function name"
@@ -4725,7 +4727,7 @@ Field:
 		wildCard := &ast.WildCardField{Schema: model.NewCIStr($1), Table: model.NewCIStr($3)}
 		$$ = &ast.SelectField{WildCard: wildCard}
 	}
-|	Expression FieldAsNameOpt
+|	SpecialExpr FieldAsNameOpt
 	{
 		expr := $1
 		asName := $2.(string)
@@ -4740,6 +4742,16 @@ Field:
 		expr := $3
 		asName := $5.(string)
 		$$ = &ast.SelectField{Expr: expr, AsName: model.NewCIStr(asName)}
+	}
+
+SpecialExpr:
+	Expression
+	{
+		$$ = $1
+	}
+|	Identifier '.' FunctionExpr
+	{
+		$$ = $3
 	}
 
 FieldAsNameOpt:
@@ -5973,6 +5985,12 @@ SimpleExpr:
 		extract := &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONExtract), Args: []ast.ExprNode{$1, expr}}
 		$$ = &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONUnquote), Args: []ast.ExprNode{extract}}
 	}
+
+FunctionExpr:
+	SumExpr
+|	FunctionCallKeyword
+|	FunctionCallNonKeyword
+|	FunctionCallGeneric
 
 DistinctKwd:
 	"DISTINCT"
