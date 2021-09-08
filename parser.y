@@ -4736,8 +4736,8 @@ Field:
 	{
 		pgSchema := &ast.PgSchemaField{Schema: model.NewCIStr($1)}
 		expr := $3
-        asName := $4.(string)
-        $$ = &ast.SelectField{Expr: expr, AsName: model.NewCIStr(asName), PgSchema: pgSchema}
+		asName := $4.(string)
+		$$ = &ast.SelectField{Expr: expr, AsName: model.NewCIStr(asName), PgSchema: pgSchema}
 	}
 |	'{' Identifier Expression '}' FieldAsNameOpt
 	{
@@ -4749,7 +4749,6 @@ Field:
 		asName := $5.(string)
 		$$ = &ast.SelectField{Expr: expr, AsName: model.NewCIStr(asName)}
 	}
-
 
 FieldAsNameOpt:
 	/* EMPTY */
