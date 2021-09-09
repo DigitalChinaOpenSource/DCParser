@@ -46,6 +46,7 @@ var (
 	_ Node = &TableSource{}
 	_ Node = &UnionSelectList{}
 	_ Node = &WildCardField{}
+	_ Node = &PgSchemaField{}
 	_ Node = &WindowSpec{}
 	_ Node = &PartitionByClause{}
 	_ Node = &FrameClause{}
@@ -508,6 +509,32 @@ func (n *WildCardField) Accept(v Visitor) (Node, bool) {
 	return v.Leave(n)
 }
 
+// PgSchemaField is a special type of select field content.
+type PgSchemaField struct {
+	node
+
+	Schema model.CIStr
+}
+
+// Restore implements Node interface.
+func (n *PgSchemaField) Restore(ctx *format.RestoreCtx) error {
+	if schema := n.Schema.String(); schema != "" {
+		ctx.WriteName(schema)
+		ctx.WritePlain(".")
+	}
+	return nil
+}
+
+// Accept implements Node Accept interface.
+func (n *PgSchemaField) Accept(v Visitor) (Node, bool) {
+	newNode, skipChildren := v.Enter(n)
+	if skipChildren {
+		return v.Leave(newNode)
+	}
+	n = newNode.(*PgSchemaField)
+	return v.Leave(n)
+}
+
 // SelectField represents fields in select statement.
 // There are two type of select field: wildcard
 // and expression with optional alias name.
@@ -518,6 +545,8 @@ type SelectField struct {
 	Offset int
 	// WildCard is not nil, Expr will be nil.
 	WildCard *WildCardField
+	// PgSchema is not nil , Expr is not nil
+	PgSchema *PgSchemaField
 	// Expr is not nil, WildCard will be nil.
 	Expr ExprNode
 	// AsName is alias name for Expr.
@@ -533,6 +562,11 @@ func (n *SelectField) Restore(ctx *format.RestoreCtx) error {
 	if n.WildCard != nil {
 		if err := n.WildCard.Restore(ctx); err != nil {
 			return errors.Annotate(err, "An error occurred while restore SelectField.WildCard")
+		}
+	}
+	if n.PgSchema != nil {
+		if err := n.PgSchema.Restore(ctx); err != nil {
+			return errors.Annotate(err, "An error occurred while restore SelectField.PgSchema")
 		}
 	}
 	if n.Expr != nil {

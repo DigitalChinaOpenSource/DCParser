@@ -750,6 +750,7 @@ import (
 	BitExpr                "bit expression"
 	SimpleExpr             "simple expression"
 	SimpleIdent            "Simple Identifier expression"
+	FunctionExpr           "Function expression"
 	SumExpr                "aggregate functions"
 	FunctionCallGeneric    "Function call with Identifier"
 	FunctionCallKeyword    "Function call with keyword as function name"
@@ -4731,6 +4732,13 @@ Field:
 		asName := $2.(string)
 		$$ = &ast.SelectField{Expr: expr, AsName: model.NewCIStr(asName)}
 	}
+|	Identifier '.' FunctionExpr FieldAsNameOpt
+	{
+		pgSchema := &ast.PgSchemaField{Schema: model.NewCIStr($1)}
+		expr := $3
+		asName := $4.(string)
+		$$ = &ast.SelectField{Expr: expr, AsName: model.NewCIStr(asName), PgSchema: pgSchema}
+	}
 |	'{' Identifier Expression '}' FieldAsNameOpt
 	{
 		/*
@@ -5973,6 +5981,12 @@ SimpleExpr:
 		extract := &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONExtract), Args: []ast.ExprNode{$1, expr}}
 		$$ = &ast.FuncCallExpr{FnName: model.NewCIStr(ast.JSONUnquote), Args: []ast.ExprNode{extract}}
 	}
+
+FunctionExpr:
+	SumExpr
+|	FunctionCallKeyword
+|	FunctionCallNonKeyword
+|	FunctionCallGeneric
 
 DistinctKwd:
 	"DISTINCT"
