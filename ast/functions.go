@@ -351,6 +351,10 @@ const (
 	PgFuncGetUserById          = "pg_get_userbyid"
 	PgFuncObjDescription       = "obj_description"
 	PgFuncShobjDescription     = "shobj_description"
+	PgFuncCurrentSchema        = "current_schema"
+	PgFuncCurrentSchemas       = "current_schemas"
+	PgFuncArrayPosition        = "array_position"
+	PgFuncArrayPositions       = "array_positions"
 )
 
 // FuncCallExpr is for function expression.
