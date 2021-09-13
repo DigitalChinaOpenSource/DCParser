@@ -228,3 +228,30 @@ func (ts *testDMLSuite) TestWindowFuncExprRestore(c *C) {
 	}
 	RunNodeRestoreTest(c, testCases, "select %s from t", extractNodeFunc)
 }
+
+func (ts *testFunctionsSuite) TestPostgresFuncExprRestore(c *C) {
+	testCases := []NodeRestoreTestCase{
+		{"current_database()", "CURRENT_DATABASE()"},
+		{"set_config('search_path', '', false)", "SET_CONFIG(_UTF8MB4'search_path', _UTF8MB4'', FALSE)"},
+		{"set_config('search_path', 'test')", "SET_CONFIG(_UTF8MB4'search_path', _UTF8MB4'test')"},
+		{"pg_encoding_to_char(1)", "PG_ENCODING_TO_CHAR(1)"},
+		{"has_database_privilege('root','postgres','CREATE')", "HAS_DATABASE_PRIVILEGE(_UTF8MB4'root', _UTF8MB4'postgres', _UTF8MB4'CREATE')"},
+		{"has_database_privilege('postgres','CREATE')", "HAS_DATABASE_PRIVILEGE(_UTF8MB4'postgres', _UTF8MB4'CREATE')"},
+		{"has_table_privilege('root','pg_user','CREATE')", "HAS_TABLE_PRIVILEGE(_UTF8MB4'root', _UTF8MB4'pg_user', _UTF8MB4'CREATE')"},
+		{"has_table_privilege('pg_user','CREATE')", "HAS_TABLE_PRIVILEGE(_UTF8MB4'pg_user', _UTF8MB4'CREATE')"},
+		{"has_schema_privilege('root','public','DELETE')", "HAS_SCHEMA_PRIVILEGE(_UTF8MB4'root', _UTF8MB4'public', _UTF8MB4'DELETE')"},
+		{"has_schema_privilege('public','DELETE')", "HAS_SCHEMA_PRIVILEGE(_UTF8MB4'public', _UTF8MB4'DELETE')"},
+		{"pg_is_in_recovery()", "PG_IS_IN_RECOVERY()"},
+		{"pg_is_wal_replay_paused()", "PG_IS_WAL_REPLAY_PAUSED()"},
+		{"pg_get_userbyid(1)", "PG_GET_USERBYID(1)"},
+		{"obj_description(10,'information_schema')", "OBJ_DESCRIPTION(10, _UTF8MB4'information_schema')"},
+		{"shobj_description(10,'pg_catalog')", "SHOBJ_DESCRIPTION(10, _UTF8MB4'pg_catalog')"},
+		{"current_schema()", "CURRENT_SCHEMA()"},
+		{"current_schemas(true)", "CURRENT_SCHEMAS(TRUE)"},
+		{"array_position('test string','test')", "ARRAY_POSITION(_UTF8MB4'test string', _UTF8MB4'test')"},
+	}
+	extractNodeFunc := func(node Node) Node {
+		return node.(*SelectStmt).Fields.Fields[0].Expr
+	}
+	RunNodeRestoreTest(c, testCases, "select %s", extractNodeFunc)
+}
