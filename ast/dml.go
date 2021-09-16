@@ -1601,6 +1601,7 @@ type DeleteStmt struct {
 	BeforeFrom   bool
 	// TableHints represents the table level Optimizer Hint for join type.
 	TableHints []*TableOptimizerHint
+	Returning  *ReturningClause
 }
 
 // Restore implements Node interface.
@@ -1683,6 +1684,13 @@ func (n *DeleteStmt) Restore(ctx *format.RestoreCtx) error {
 		}
 	}
 
+	if n.Returning != nil {
+		ctx.WritePlain(" ")
+		if err := n.Returning.Restore(ctx); err != nil {
+			return errors.Annotate(err, "An error occurred while restore DeleteStmt.Returning")
+		}
+	}
+
 	return nil
 }
 
@@ -1728,6 +1736,13 @@ func (n *DeleteStmt) Accept(v Visitor) (Node, bool) {
 			return n, false
 		}
 		n.Limit = node.(*Limit)
+	}
+	if n.Returning != nil {
+		node, ok = n.Returning.Accept(v)
+		if !ok {
+			return n, false
+		}
+		n.Returning = node.(*ReturningClause)
 	}
 	return v.Leave(n)
 }
@@ -2816,3 +2831,39 @@ const (
 	TimestampBoundReadTimestamp
 	TimestampBoundMinReadTimestamp
 )
+
+type ReturningClause struct {
+	node
+	Fields *FieldList
+}
+
+func (n *ReturningClause) Restore(ctx *format.RestoreCtx) error {
+	ctx.WriteKeyWord("Returning ")
+	for i, item := range n.Fields.Fields {
+		if i != 0 {
+			ctx.WritePlain(",")
+		}
+		if err := item.Restore(ctx); err != nil {
+			return errors.Annotatef(err, "An error occurred while restore ReturningClause.Fields[%d]", i)
+		}
+	}
+	return nil
+}
+
+func (n *ReturningClause) Accept(v Visitor) (Node, bool) {
+	newNode, skipChildren := v.Enter(n)
+	if skipChildren {
+		return v.Leave(newNode)
+	}
+	n = newNode.(*ReturningClause)
+
+	if n.Fields != nil {
+		node, ok := n.Fields.Accept(v)
+		if !ok {
+			return n, false
+		}
+		n.Fields = node.(*FieldList)
+	}
+
+	return v.Leave(n)
+}
