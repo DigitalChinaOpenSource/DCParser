@@ -332,6 +332,7 @@ import (
 	compression           "COMPRESSION"
 	concurrency           "CONCURRENCY"
 	connection            "CONNECTION"
+	conflict              "CONFLICT"
 	consistent            "CONSISTENT"
 	context               "CONTEXT"
 	cpu                   "CPU"
@@ -452,6 +453,7 @@ import (
 	nomaxvalue            "NOMAXVALUE"
 	nominvalue            "NOMINVALUE"
 	none                  "NONE"
+	nothing               "NOTHING"
 	nowait                "NOWAIT"
 	nvarcharType          "NVARCHAR"
 	nulls                 "NULLS"
@@ -460,6 +462,7 @@ import (
 	online                "ONLINE"
 	only                  "ONLY"
 	open                  "OPEN"
+	overriding            "OVERRIDING"
 	packKeys              "PACK_KEYS"
 	pageSym               "PAGE"
 	parser                "PARSER"
@@ -553,6 +556,7 @@ import (
 	super                 "SUPER"
 	swaps                 "SWAPS"
 	switchesSym           "SWITCHES"
+	system                "SYSTEM"
 	systemTime            "SYSTEM_TIME"
 	tableChecksum         "TABLE_CHECKSUM"
 	tables                "TABLES"
@@ -977,6 +981,8 @@ import (
 	NoWriteToBinLogAliasOpt                "NO_WRITE_TO_BINLOG alias LOCAL or empty"
 	ObjectType                             "Grant statement object type"
 	OnDuplicateKeyUpdate                   "ON DUPLICATE KEY UPDATE value list"
+	OnConflictOpt                          "ON CONFLICT optional"
+	OverridingOpt                          "OVERRIDING VALUE optional"
 	DuplicateOpt                           "[IGNORE|REPLACE] in CREATE TABLE ... SELECT statement or LOAD DATA statement"
 	OptFull                                "Full or empty"
 	OptTemporary                           "TEMPORARY or empty"
@@ -1201,6 +1207,7 @@ import (
 	BRIEBooleanOptionName                  "Name of a BRIE option which takes a boolean as input"
 	BRIEStringOptionName                   "Name of a BRIE option which takes a string as input"
 	BRIEKeywordOptionName                  "Name of a BRIE option which takes a case-insensitive string as input"
+	OnConflictClause                       "On COnflict Clause"
 	ReturningClause                        "Returning Clause"
 	ReturningOptional                      "Returning option"
 
@@ -1217,6 +1224,7 @@ import (
 	RegexpSym         "REGEXP or RLIKE"
 	IntoOpt           "INTO or EmptyString"
 	ValueSym          "Value or Values"
+	SystemSym         "SYSTEM or USER"
 	Char              "{CHAR|CHARACTER}"
 	NChar             "{NCHAR|NATIONAL CHARACTER|NATIONAL CHAR}"
 	Varchar           "{VARCHAR|VARCHARACTER|CHARACTER VARYING|CHAR VARYING}"
@@ -5041,6 +5049,8 @@ UnReservedKeyword:
 |	"DEALLOCATE"
 |	"DO"
 |	"DUPLICATE"
+|	"CONFLICT"
+|	"OVERRIDING"
 |	"DYNAMIC"
 |	"ENCRYPTION"
 |	"END"
@@ -5161,6 +5171,8 @@ UnReservedKeyword:
 |	"EVENTS"
 |	"PARTITIONS"
 |	"NONE"
+|	"NOTHING"
+|	"SYSTEM"
 |	"NULLS"
 |	"SUPER"
 |	"EXCLUSIVE"
@@ -5415,16 +5427,20 @@ TiDB4PGKeyword:
  *  TODO: support PARTITION
  **********************************************************************************/
 InsertIntoStmt:
-	"INSERT" TableOptimizerHints PriorityOpt IgnoreOptional IntoOpt TableName PartitionNameListOpt InsertValues OnDuplicateKeyUpdate
+	"INSERT" TableOptimizerHints PriorityOpt IgnoreOptional IntoOpt TableName PartitionNameListOpt OverridingOpt InsertValues OnConflictOpt ReturningOptional
 	{
-		x := $8.(*ast.InsertStmt)
+		x := $9.(*ast.InsertStmt)
 		x.Priority = $3.(mysql.PriorityEnum)
 		x.IgnoreErr = $4.(bool)
+		x.Overriding = $8.(bool)
 		// Wraps many layers here so that it can be processed the same way as select statement.
 		ts := &ast.TableSource{Source: $6.(*ast.TableName)}
 		x.Table = &ast.TableRefsClause{TableRefs: &ast.Join{Left: ts}}
-		if $9 != nil {
-			x.OnDuplicate = $9.([]*ast.Assignment)
+		if $10 != nil {
+			x.OnConflict = $10.([]*ast.Assignment)
+		}
+		if $11 != nil {
+			x.Returning = $11.(*ast.ReturningClause)
 		}
 		if $2 != nil {
 			x.TableHints = $2.([]*ast.TableOptimizerHint)
@@ -5478,9 +5494,42 @@ InsertValues:
 		$$ = &ast.InsertStmt{Setlist: $2.([]*ast.Assignment)}
 	}
 
+OverridingOpt:
+	{
+		$$ = false
+	}
+|	"OVERRIDING" SystemSym "VALUE"
+	{
+		$$ = true
+	}
+
+SystemSym:
+	"SYSTEM"
+|	"USER"
+
+OnConflictOpt:
+	{
+		$$ = nil
+	}
+|	OnConflictClause
+	{
+		$$ = $1
+	}
+
+OnConflictClause:
+	"ON" "CONFLICT" "DO" "NOTHING"
+	{
+		$$ = nil
+	}
+|	"ON" "CONFLICT" "DO" "UPDATE" "SET" AssignmentList
+	{
+		$$ = $6
+	}
+
 ValueSym:
 	"VALUE"
 |	"VALUES"
+|	"DEFAULT" "VALUES"
 
 ValuesList:
 	RowValue
@@ -10528,7 +10577,7 @@ StringNameOrBRIEOptionKeyword:
  * See https://dev.mysql.com/doc/refman/5.7/en/update.html
  ***********************************************************************************/
 UpdateStmt:
-	"UPDATE" TableOptimizerHints PriorityOpt IgnoreOptional TableRef "SET" AssignmentList WhereClauseOptional OrderByOptional LimitClause
+	"UPDATE" TableOptimizerHints PriorityOpt IgnoreOptional TableRef "SET" AssignmentList WhereClauseOptional OrderByOptional LimitClause ReturningOptional
 	{
 		var refs *ast.Join
 		if x, ok := $5.(*ast.Join); ok {
@@ -10553,6 +10602,9 @@ UpdateStmt:
 		}
 		if $10 != nil {
 			st.Limit = $10.(*ast.Limit)
+		}
+		if $11 != nil {
+			st.Returning = $11.(*ast.ReturningClause)
 		}
 		$$ = st
 	}
