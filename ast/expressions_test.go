@@ -303,7 +303,7 @@ func (tc *testExpressionsSuite) TestValuesExpr(c *C) {
 		{"values(a)+values(b)", "VALUES(`a`)+VALUES(`b`)"},
 	}
 	extractNodeFunc := func(node Node) Node {
-		return node.(*InsertStmt).OnConflict[0].Expr
+		return node.(*InsertStmt).OnDuplicate[0].Expr
 	}
 	RunNodeRestoreTest(c, testCases, "insert into t values (1,2,3) on conflict do update set c=%s", extractNodeFunc)
 }

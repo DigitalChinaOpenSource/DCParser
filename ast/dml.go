@@ -1409,7 +1409,7 @@ type InsertStmt struct {
 	Lists          [][]ExprNode
 	Setlist        []*Assignment
 	Priority       mysql.PriorityEnum
-	OnDuplicate     []*Assignment
+	OnDuplicate    []*Assignment
 	Select         ResultSetNode
 	PartitionNames []model.CIStr
 	// TableHints represents the table level Optimizer Hint for join type.
@@ -1524,7 +1524,7 @@ func (n *InsertStmt) Restore(ctx *format.RestoreCtx) error {
 				ctx.WritePlain(",")
 			}
 			if err := v.Restore(ctx); err != nil {
-				return errors.Annotatef(err, "An error occurred while restore InsertStmt.OnConflict[%d]", i)
+				return errors.Annotatef(err, "An error occurred while restore InsertStmt.OnDuplicate[%d]", i)
 			}
 		}
 	}
