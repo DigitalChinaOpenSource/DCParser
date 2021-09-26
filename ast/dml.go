@@ -1518,7 +1518,7 @@ func (n *InsertStmt) Restore(ctx *format.RestoreCtx) error {
 		}
 	}
 	if n.OnConflict != nil {
-		ctx.WriteKeyWord(" ON CONFLICT DO UPDATE SET ")
+		ctx.WriteKeyWord(" ON DUPLICATE KEY UPDATE ")
 		for i, v := range n.OnConflict {
 			if i != 0 {
 				ctx.WritePlain(",")

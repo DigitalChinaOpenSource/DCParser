@@ -5427,7 +5427,7 @@ TiDB4PGKeyword:
  *  TODO: support PARTITION
  **********************************************************************************/
 InsertIntoStmt:
-	"INSERT" TableOptimizerHints PriorityOpt IgnoreOptional IntoOpt TableName PartitionNameListOpt OverridingOpt InsertValues OnConflictOpt ReturningOptional
+	"INSERT" TableOptimizerHints PriorityOpt IgnoreOptional IntoOpt TableName PartitionNameListOpt OverridingOpt InsertValues OnDuplicateKeyUpdate ReturningOptional
 	{
 		x := $9.(*ast.InsertStmt)
 		x.Priority = $3.(mysql.PriorityEnum)
@@ -5603,6 +5603,10 @@ OnDuplicateKeyUpdate:
 |	"ON" "DUPLICATE" "KEY" "UPDATE" AssignmentList
 	{
 		$$ = $5
+	}
+|	OnConflictClause
+	{
+		$$ = $1
 	}
 
 /************************************************************************************

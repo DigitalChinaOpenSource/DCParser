@@ -707,12 +707,12 @@ func (s *testParserSuite) TestDMLStmt(c *C) {
 		{"admin reset telemetry_id", true, "ADMIN RESET TELEMETRY_ID"},
 
 		// for on duplicate key update
-		//{"INSERT INTO t (a,b,c) VALUES (1,2,3),(4,5,6) ON DUPLICATE KEY UPDATE c=VALUES(a)+VALUES(b);", true, "INSERT INTO `t` (`a`,`b`,`c`) VALUES (1,2,3),(4,5,6) ON DUPLICATE KEY UPDATE `c`=VALUES(`a`)+VALUES(`b`)"},
-		//{"INSERT IGNORE INTO t (a,b,c) VALUES (1,2,3),(4,5,6) ON DUPLICATE KEY UPDATE c=VALUES(a)+VALUES(b);", true, "INSERT IGNORE INTO `t` (`a`,`b`,`c`) VALUES (1,2,3),(4,5,6) ON DUPLICATE KEY UPDATE `c`=VALUES(`a`)+VALUES(`b`)"},
+		{"INSERT INTO t (a,b,c) VALUES (1,2,3),(4,5,6) ON DUPLICATE KEY UPDATE c=VALUES(a)+VALUES(b);", true, "INSERT INTO `t` (`a`,`b`,`c`) VALUES (1,2,3),(4,5,6) ON DUPLICATE KEY UPDATE `c`=VALUES(`a`)+VALUES(`b`)"},
+		{"INSERT IGNORE INTO t (a,b,c) VALUES (1,2,3),(4,5,6) ON DUPLICATE KEY UPDATE c=VALUES(a)+VALUES(b);", true, "INSERT IGNORE INTO `t` (`a`,`b`,`c`) VALUES (1,2,3),(4,5,6) ON DUPLICATE KEY UPDATE `c`=VALUES(`a`)+VALUES(`b`)"},
 
 		// for on conflict do update set
-		{"INSERT INTO t (a,b,c) VALUES (1,2,3),(4,5,6) ON CONFLICT DO UPDATE SET c=VALUES(a)+VALUES(b);", true, "INSERT INTO `t` (`a`,`b`,`c`) VALUES (1,2,3),(4,5,6) ON CONFLICT DO UPDATE SET `c`=VALUES(`a`)+VALUES(`b`)"},
-		{"INSERT IGNORE INTO t (a,b,c) VALUES (1,2,3),(4,5,6) ON CONFLICT DO UPDATE SET c=VALUES(a)+VALUES(b);", true, "INSERT IGNORE INTO `t` (`a`,`b`,`c`) VALUES (1,2,3),(4,5,6) ON CONFLICT DO UPDATE SET `c`=VALUES(`a`)+VALUES(`b`)"},
+		{"INSERT INTO t (a,b,c) VALUES (1,2,3),(4,5,6) ON CONFLICT DO UPDATE SET c=VALUES(a)+VALUES(b);", true, "INSERT INTO `t` (`a`,`b`,`c`) VALUES (1,2,3),(4,5,6) ON DUPLICATE KEY UPDATE `c`=VALUES(`a`)+VALUES(`b`)"},
+		{"INSERT IGNORE INTO t (a,b,c) VALUES (1,2,3),(4,5,6) ON CONFLICT DO UPDATE SET c=VALUES(a)+VALUES(b);", true, "INSERT IGNORE INTO `t` (`a`,`b`,`c`) VALUES (1,2,3),(4,5,6) ON DUPLICATE KEY UPDATE `c`=VALUES(`a`)+VALUES(`b`)"},
 
 		// for insert ... set
 		{"INSERT INTO t SET a=1,b=2", true, "INSERT INTO `t` SET `a`=1,`b`=2"},
@@ -2874,7 +2874,7 @@ func (s *testParserSuite) TestDDL(c *C) {
 		{"insert into t set a = default", true, "INSERT INTO `t` SET `a`=DEFAULT"},
 		{"replace t set a = default", true, "REPLACE INTO `t` SET `a`=DEFAULT"},
 		{"update t set a = default", true, "UPDATE `t` SET `a`=DEFAULT"},
-		{"insert into t set a = default on conflict do update set a = default", true, "INSERT INTO `t` SET `a`=DEFAULT ON CONFLICT DO UPDATE SET `a`=DEFAULT"},
+		{"insert into t set a = default on duplicate key update a = default", true, "INSERT INTO `t` SET `a`=DEFAULT ON DUPLICATE KEY UPDATE `a`=DEFAULT"},
 
 		// for issue 529
 		{"create table t (a text byte ascii)", false, ""},
