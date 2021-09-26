@@ -1409,7 +1409,7 @@ type InsertStmt struct {
 	Lists          [][]ExprNode
 	Setlist        []*Assignment
 	Priority       mysql.PriorityEnum
-	OnConflict     []*Assignment
+	OnDuplicate    []*Assignment
 	Select         ResultSetNode
 	PartitionNames []model.CIStr
 	// TableHints represents the table level Optimizer Hint for join type.
@@ -1517,9 +1517,9 @@ func (n *InsertStmt) Restore(ctx *format.RestoreCtx) error {
 			}
 		}
 	}
-	if n.OnConflict != nil {
+	if n.OnDuplicate != nil {
 		ctx.WriteKeyWord(" ON DUPLICATE KEY UPDATE ")
-		for i, v := range n.OnConflict {
+		for i, v := range n.OnDuplicate {
 			if i != 0 {
 				ctx.WritePlain(",")
 			}
@@ -1584,12 +1584,12 @@ func (n *InsertStmt) Accept(v Visitor) (Node, bool) {
 		}
 		n.Setlist[i] = node.(*Assignment)
 	}
-	for i, val := range n.OnConflict {
+	for i, val := range n.OnDuplicate {
 		node, ok := val.Accept(v)
 		if !ok {
 			return n, false
 		}
-		n.OnConflict[i] = node.(*Assignment)
+		n.OnDuplicate[i] = node.(*Assignment)
 	}
 	if n.Returning != nil {
 		node, ok = n.Returning.Accept(v)
