@@ -1598,6 +1598,13 @@ func (n *InsertStmt) Accept(v Visitor) (Node, bool) {
 		}
 		n.Returning = node.(*ReturningClause)
 	}
+	if n.Returning != nil {
+		node, ok = n.Returning.Accept(v)
+		if !ok {
+			return n, false
+		}
+		n.Returning = node.(*ReturningClause)
+	}
 	return v.Leave(n)
 }
 
