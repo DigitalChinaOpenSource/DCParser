@@ -355,6 +355,10 @@ const (
 	PgFuncCurrentSchemas       = "current_schemas"
 	PgFuncArrayPosition        = "array_position"
 	PgFuncArrayPositions       = "array_positions"
+	PgFuncFormatType           = "format_type"
+	PgFuncPgGetExpr            = "pg_get_expr"
+	pgFuncColDescription       = "col_description"
+	PgFuncGenerateSubscripts   = "generate_subscripts"
 )
 
 // FuncCallExpr is for function expression.
