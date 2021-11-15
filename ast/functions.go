@@ -355,8 +355,8 @@ const (
 	PgFuncCurrentSchemas       = "current_schemas"
 	PgFuncArrayPosition        = "array_position"
 	PgFuncArrayPositions       = "array_positions"
-	PgFUncFormatType           = "format_type"
-	PgFUncPgGetExpr            = "pg_get_expr"
+	PgFuncFormatType           = "format_type"
+	PgFuncPgGetExpr            = "pg_get_expr"
 	pgFuncColDescription       = "col_description"
 	PgFuncGenerateSubscripts   = "generate_subscripts"
 )
