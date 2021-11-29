@@ -5437,7 +5437,7 @@ InsertIntoStmt:
 		ts := &ast.TableSource{Source: $6.(*ast.TableName)}
 		x.Table = &ast.TableRefsClause{TableRefs: &ast.Join{Left: ts}}
 		if $10 != nil {
-			x.OnConflict = $10.([]*ast.Assignment)
+			x.OnDuplicate = $10.([]*ast.Assignment)
 		}
 		if $11 != nil {
 			x.Returning = $11.(*ast.ReturningClause)
