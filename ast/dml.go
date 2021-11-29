@@ -1403,6 +1403,7 @@ type InsertStmt struct {
 
 	IsReplace      bool
 	IgnoreErr      bool
+	Overriding     bool
 	Table          *TableRefsClause
 	Columns        []*ColumnName
 	Lists          [][]ExprNode
@@ -1413,6 +1414,7 @@ type InsertStmt struct {
 	PartitionNames []model.CIStr
 	// TableHints represents the table level Optimizer Hint for join type.
 	TableHints []*TableOptimizerHint
+	Returning  *ReturningClause
 }
 
 // Restore implements Node interface.
@@ -1444,6 +1446,9 @@ func (n *InsertStmt) Restore(ctx *format.RestoreCtx) error {
 	}
 	if n.IgnoreErr {
 		ctx.WriteKeyWord("IGNORE ")
+	}
+	if n.Overriding {
+		ctx.WriteKeyWord("OVERRIDING ")
 	}
 	ctx.WriteKeyWord("INTO ")
 	if err := n.Table.Restore(ctx); err != nil {
@@ -1519,8 +1524,15 @@ func (n *InsertStmt) Restore(ctx *format.RestoreCtx) error {
 				ctx.WritePlain(",")
 			}
 			if err := v.Restore(ctx); err != nil {
-				return errors.Annotatef(err, "An error occurred while restore InsertStmt.OnDuplicate[%d]", i)
+				return errors.Annotatef(err, "An error occurred while restore InsertStmt.OnConflict[%d]", i)
 			}
+		}
+	}
+
+	if n.Returning != nil {
+		ctx.WritePlain(" ")
+		if err := n.Returning.Restore(ctx); err != nil {
+			return errors.Annotate(err, "An error occurred while restore DeleteStmt.Returning")
 		}
 	}
 
@@ -1578,6 +1590,13 @@ func (n *InsertStmt) Accept(v Visitor) (Node, bool) {
 			return n, false
 		}
 		n.OnDuplicate[i] = node.(*Assignment)
+	}
+	if n.Returning != nil {
+		node, ok = n.Returning.Accept(v)
+		if !ok {
+			return n, false
+		}
+		n.Returning = node.(*ReturningClause)
 	}
 	return v.Leave(n)
 }
@@ -1761,6 +1780,7 @@ type UpdateStmt struct {
 	IgnoreErr     bool
 	MultipleTable bool
 	TableHints    []*TableOptimizerHint
+	Returning     *ReturningClause
 }
 
 // Restore implements Node interface.
@@ -1832,6 +1852,12 @@ func (n *UpdateStmt) Restore(ctx *format.RestoreCtx) error {
 		}
 	}
 
+	if n.Returning != nil {
+		ctx.WritePlain(" ")
+		if err := n.Returning.Restore(ctx); err != nil {
+			return errors.Annotate(err, "An error occurred while restore UpdateStmt.Returning")
+		}
+	}
 	return nil
 }
 
@@ -1874,6 +1900,13 @@ func (n *UpdateStmt) Accept(v Visitor) (Node, bool) {
 			return n, false
 		}
 		n.Limit = node.(*Limit)
+	}
+	if n.Returning != nil {
+		node, ok = n.Returning.Accept(v)
+		if !ok {
+			return n, false
+		}
+		n.Returning = node.(*ReturningClause)
 	}
 	return v.Leave(n)
 }
